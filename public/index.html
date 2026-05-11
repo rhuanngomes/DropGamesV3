@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DropGames</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="js/auth.js" defer></script>
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="dg-header">
+    <div class="dg-header-inner">
+      <a href="#" class="dg-logo">
+        <img src="img/logo-dropgames.svg" alt="DropGames" class="dg-logo-img" />
+      </a>
+
+      <nav class="dg-nav">
+        <a href="#" class="dg-nav-link">Descobrir <img src="img/icon-chevron.svg" class="dg-nav-chevron" alt="" /></a>
+        <a href="sobre-nos.html" class="dg-nav-link">Sobre nós <img src="img/icon-chevron.svg" class="dg-nav-chevron" alt="" /></a>
+        <a href="dados.html" class="dg-nav-link">Dados</a>
+        <a href="suporte.html" class="dg-nav-link">Suporte</a>
+      </nav>
+
+      <div class="dg-header-actions">
+        <button class="dg-btn dg-btn-ghost">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </button>
+        <a href="login.html" class="dg-btn dg-btn-secondary dg-auth-only">Entrar</a>
+        <a href="signup.html" class="dg-btn dg-btn-primary dg-auth-only">Cadastrar</a>
+        <div class="dg-header-notif dg-logged-only">
+          <img src="img/header-bell.svg" alt="" class="dg-notif-icon" />
+          <span class="dg-notif-badge">2</span>
+        </div>
+        <div class="dg-header-avatar dg-logged-only">
+          <img src="img/header-avatar.jpg" alt="Perfil" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ==================== HERO ==================== -->
+    <section class="dg-hero">
+      <div class="dg-hero-inner">
+
+        <!-- Featured game -->
+        <div class="dg-hero-featured">
+          <div class="dg-hero-img-wrap" id="hero-img-wrap">
+            <video
+              id="hero-video"
+              class="dg-hero-video"
+              autoplay
+              loop
+              playsinline
+              muted
+              poster="img/hero-main.jpg"
+            ></video>
+            <div class="dg-hero-overlay">
+              <div class="dg-hero-game-logo" id="hero-logo-wrap">
+                <img id="hero-logo" src="img/hero-logo-tlou.png" alt="The Last of Us logo" class="dg-hero-game-logo-img" />
+              </div>
+              <p class="dg-hero-desc" id="hero-desc">
+                Viva desde o início os premiados jogos que inspiraram a série de TV, com as edições definitivas dessas duas histórias memoráveis e emocionantes oferecidas em conjunto pela primeira vez em uma coleção completa.
+              </p>
+              <div class="dg-hero-cta">
+                <button class="dg-btn dg-btn-dark">Compare agora</button>
+                <div class="dg-hero-platforms" id="hero-platforms">
+                  <img src="img/platform-steam.png" alt="Steam" />
+                  <img src="img/platform-ps.png" alt="PlayStation" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar game list -->
+        <aside class="dg-hero-sidebar" id="hero-sidebar">
+          <div class="dg-hero-card">
+            <img src="img/sidebar-resident-evil.jpg" alt="Resident Evil Requiem" class="dg-hero-card-img" />
+            <div class="dg-hero-card-info">
+              <div class="dg-hero-card-text">
+                <p class="dg-hero-card-title">Resident Evil Requiem</p>
+                <p class="dg-hero-card-desc">A história de Requiem se passa em outubro de 2026, 28 anos após a destruição d...</p>
+              </div>
+              <img src="img/icon-stars.svg" class="dg-stars-img" alt="Avaliação" />
+            </div>
+          </div>
+          <div class="dg-hero-card">
+            <img src="img/sidebar-nioh3.jpg" alt="Nioh 3" class="dg-hero-card-img" />
+            <div class="dg-hero-card-info">
+              <div class="dg-hero-card-text">
+                <p class="dg-hero-card-title">Nioh 3</p>
+                <p class="dg-hero-card-desc">No terceiro jogo da série sombria de RPG de ação com samurais Nioh, você...</p>
+              </div>
+              <img src="img/icon-stars.svg" class="dg-stars-img" alt="Avaliação" />
+            </div>
+          </div>
+          <div class="dg-hero-card">
+            <img src="img/sidebar-monster-hunter.jpg" alt="Monster Hunter Stories 3" class="dg-hero-card-img" />
+            <div class="dg-hero-card-info">
+              <div class="dg-hero-card-text">
+                <p class="dg-hero-card-title">Monster Hunter Stories 3</p>
+                <p class="dg-hero-card-desc">Monster Hunter Stories 3 é o novo capítulo da sub-série, cuja jogabilidade é...</p>
+              </div>
+              <img src="img/icon-stars.svg" class="dg-stars-img" alt="Avaliação" />
+            </div>
+          </div>
+          <div class="dg-hero-card">
+            <img src="img/sidebar-ride6.jpg" alt="RIDE 6" class="dg-hero-card-img" />
+            <div class="dg-hero-card-info">
+              <div class="dg-hero-card-text">
+                <p class="dg-hero-card-title">RIDE 6</p>
+                <p class="dg-hero-card-desc">A nova versão traz um leque ainda maior de veículos licenciados, pistas...</p>
+              </div>
+              <img src="img/icon-stars.svg" class="dg-stars-img" alt="Avaliação" />
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- ==================== MELHORES PREÇOS ==================== -->
+    <section class="dg-section">
+      <div class="dg-section-inner">
+        <div class="dg-section-header">
+          <h2 class="dg-section-title">Melhores preços da semana <img src="img/icon-section-arrow.svg" class="dg-title-arrow" alt="" /></h2>
+          <div class="dg-nav-arrows">
+            <button class="dg-arrow-btn"><img src="img/icon-arrow-left.svg" class="dg-arrow-icon dg-arrow-icon--left" alt="" /></button>
+            <button class="dg-arrow-btn"><img src="img/icon-arrow-right.svg" class="dg-arrow-icon" alt="" /></button>
+          </div>
+        </div>
+        <div class="dg-cards-row">
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-baldurs-gate.jpg" alt="Baldur's Gate 3" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">PSN</span>
+              <p class="dg-game-title">Baldur's Gate 3</p>
+              <p class="dg-game-price">R$ 79,90</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-astrobot.jpg" alt="Astrobot" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">PSN</span>
+              <p class="dg-game-title">Astrobot</p>
+              <p class="dg-game-price">R$ 49,90</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-elden-ring.jpg" alt="Elden Ring" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">PSN</span>
+              <p class="dg-game-title">Elden Ring: Shadow of the Erdtree</p>
+              <p class="dg-game-price">R$ 29,90</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-witcher3.jpg" alt="The Witcher 3" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Epic Games</span>
+              <p class="dg-game-title">The Witcher 3: Wild Hunt</p>
+              <p class="dg-game-price">R$ 149,90</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-metaphor.jpg" alt="Metaphor" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Amazon</span>
+              <p class="dg-game-title">Metaphor: ReFantazio</p>
+              <p class="dg-game-price">R$ 99,90</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-god-of-war.jpg" alt="God of War" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Kabum</span>
+              <p class="dg-game-title">God of War: Ragnarok</p>
+              <p class="dg-game-price">R$ 319,90</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PROMO BANNERS ==================== -->
+    <section class="dg-section dg-promo-section">
+      <div class="dg-section-inner">
+        <div class="dg-promo-grid">
+          <div class="dg-promo-card">
+            <img src="img/promo-madden.jpg" alt="Madden NFL 27" class="dg-promo-img" />
+            <div class="dg-promo-body">
+              <p class="dg-promo-title">Madden NFL 27</p>
+              <p class="dg-promo-desc">O próximo capítulo do lendário jogo de futebol americano chega em breve com Madden NFL 27.</p>
+            </div>
+            <button class="dg-btn dg-btn-dark dg-promo-btn">Descubra já</button>
+          </div>
+          <div class="dg-promo-card">
+            <img src="img/promo-nacon.jpg" alt="Nacon Connect" class="dg-promo-img" />
+            <div class="dg-promo-body">
+              <p class="dg-promo-title">Promoção da Nacon Connect</p>
+              <p class="dg-promo-desc">Novos anúncios, novas aventuras! Encontre seu próximo jogo favorito durante a Nacon Connect!</p>
+            </div>
+            <button class="dg-btn dg-btn-dark dg-promo-btn">Descubra já</button>
+          </div>
+          <div class="dg-promo-card">
+            <img src="img/promo-without-a-hitch.jpg" alt="Without A Hitch" class="dg-promo-img" />
+            <div class="dg-promo-body">
+              <p class="dg-promo-title">WITHOUT A HITCH</p>
+              <p class="dg-promo-desc">Trabalho em equipe é uma bagunça, o caos impera, e cada entrega é uma nova aventura!</p>
+            </div>
+            <button class="dg-btn dg-btn-dark dg-promo-btn">Descubra já</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== DESCUBRA ALGO NOVO ==================== -->
+    <section class="dg-section">
+      <div class="dg-section-inner">
+        <div class="dg-section-header">
+          <h2 class="dg-section-title">Descubra algo novo <img src="img/icon-section-arrow.svg" class="dg-title-arrow" alt="" /></h2>
+          <div class="dg-nav-arrows">
+            <button class="dg-arrow-btn"><img src="img/icon-arrow-left.svg" class="dg-arrow-icon dg-arrow-icon--left" alt="" /></button>
+            <button class="dg-arrow-btn"><img src="img/icon-arrow-right.svg" class="dg-arrow-icon" alt="" /></button>
+          </div>
+        </div>
+        <div class="dg-cards-row">
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-star-wars.jpg" alt="Star Wars Galactic Racer" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Epic Games</span>
+              <p class="dg-game-title">STAR WARS: Galactic Racer™</p>
+              <p class="dg-game-price">R$ 179,99</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-subnautica2.jpg" alt="Subnautica 2" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">PSN</span>
+              <p class="dg-game-title">Subnautica 2</p>
+              <p class="dg-game-price dg-price-date">Disponível em 14/05/26</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-lego-batman.jpg" alt="LEGO Batman" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Origin</span>
+              <p class="dg-game-title">LEGO® Batman™: O Legado do...</p>
+              <p class="dg-game-price">R$ 299,99</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-mixtape.jpg" alt="Mixtape" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Epic Games</span>
+              <p class="dg-game-title">Mixtape</p>
+              <p class="dg-game-price">R$ 149,90</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-lords-fallen.jpg" alt="Lords of the Fallen II" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Amazon</span>
+              <p class="dg-game-title">Lords of the Fallen II</p>
+              <p class="dg-game-price dg-price-date">Em breve</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-arc-raiders.jpg" alt="ARC Raiders" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Kabum</span>
+              <p class="dg-game-title">ARC Raiders</p>
+              <p class="dg-game-price">R$ 171,80</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== LISTAS (3 COLUNAS) ==================== -->
+    <section class="dg-section dg-lists-section">
+      <div class="dg-section-inner">
+        <div class="dg-lists-grid">
+
+          <!-- Novos lançamentos -->
+          <div class="dg-list-col">
+            <h2 class="dg-section-title dg-list-title">Novos lançamentos <img src="img/icon-section-arrow.svg" class="dg-title-arrow" alt="" /></h2>
+            <div class="dg-list-items">
+              <div class="dg-list-item">
+                <img src="img/list-trash-goblin.jpg" alt="Trash Goblin" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">Trash Goblin</p>
+                  <p class="dg-list-price">R$ 26,99</p>
+                </div>
+              </div>
+              <div class="dg-list-item">
+                <img src="img/list-artful-escape.jpg" alt="The Artful Escape" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">The Artful Escape</p>
+                  <div class="dg-price-row">
+                    <span class="dg-badge">-40%</span>
+                    <span class="dg-price-old">R$ 57,99</span>
+                    <span class="dg-list-price">R$ 34,79</span>
+                  </div>
+                </div>
+              </div>
+              <div class="dg-list-item">
+                <img src="img/card-mixtape.jpg" alt="Mixtape" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">Mixtape</p>
+                  <div class="dg-price-row">
+                    <span class="dg-badge">-10%</span>
+                    <span class="dg-price-old">R$ 57,99</span>
+                    <span class="dg-list-price">R$ 52,19</span>
+                  </div>
+                </div>
+              </div>
+              <div class="dg-list-item">
+                <img src="img/list-flirty-landlord.jpg" alt="Flirty Landlord" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">Flirty Landlord Gordeous...</p>
+                  <div class="dg-price-row">
+                    <span class="dg-badge">-15%</span>
+                    <span class="dg-price-old">R$ 23,99</span>
+                    <span class="dg-list-price">R$ 20,39</span>
+                  </div>
+                </div>
+              </div>
+              <div class="dg-list-item">
+                <img src="img/list-hank.jpg" alt="Hank" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">Hank: Drowning On Dry Land</p>
+                  <div class="dg-price-row">
+                    <span class="dg-badge">-40%</span>
+                    <span class="dg-price-old">R$ 57,99</span>
+                    <span class="dg-list-price">R$ 34,79</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dg-list-divider"></div>
+
+          <!-- Melhores classificados -->
+          <div class="dg-list-col">
+            <h2 class="dg-section-title dg-list-title">Melhores classificados <img src="img/icon-section-arrow.svg" class="dg-title-arrow" alt="" /></h2>
+            <div class="dg-list-items">
+              <div class="dg-list-item">
+                <img src="img/list-celeste.jpg" alt="Celeste" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">Celeste</p>
+                  <p class="dg-list-price">R$ 36,99</p>
+                </div>
+              </div>
+              <div class="dg-list-item">
+                <img src="img/list-kingdom-hearts.jpg" alt="Kingdom Hearts" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">KINGDOM HEARTS III + Re...</p>
+                  <div class="dg-price-row">
+                    <span class="dg-badge">-40%</span>
+                    <span class="dg-price-old">R$ 57,99</span>
+                    <span class="dg-list-price">R$ 34,79</span>
+                  </div>
+                </div>
+              </div>
+              <div class="dg-list-item">
+                <img src="img/list-death-stranding.jpg" alt="Death Stranding 2" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">DEATH STRANDING 2</p>
+                  <p class="dg-list-price">R$ 399,90</p>
+                </div>
+              </div>
+              <div class="dg-list-item">
+                <img src="img/list-avatar.jpg" alt="Avatar" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">Avatar: Frontiers of Pandora</p>
+                  <p class="dg-list-price">R$ 149,99</p>
+                </div>
+              </div>
+              <div class="dg-list-item">
+                <img src="img/list-horizon.jpg" alt="Horizon Zero Dawn" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">Horizon Zero Dawn™ Rema...</p>
+                  <p class="dg-list-price">R$ 249,50</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dg-list-divider"></div>
+
+          <!-- Em breve -->
+          <div class="dg-list-col">
+            <h2 class="dg-section-title dg-list-title">Em breve <img src="img/icon-section-arrow.svg" class="dg-title-arrow" alt="" /></h2>
+            <div class="dg-list-items">
+              <div class="dg-list-item">
+                <img src="img/list-hidden-cats.jpg" alt="Hidden Cats" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">Hidden Cats in Berlin</p>
+                  <p class="dg-list-price dg-price-date">Disponível em 08/05/26</p>
+                </div>
+              </div>
+              <div class="dg-list-item">
+                <img src="img/list-everything-crab.jpg" alt="Everything is Crab" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">Everything is Crab</p>
+                  <p class="dg-list-price dg-price-date">Disponível em 08/05/26</p>
+                </div>
+              </div>
+              <div class="dg-list-item">
+                <img src="img/list-loot-stack.jpg" alt="Loot Stack" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">Loot Stack - Relics Hunter</p>
+                  <p class="dg-list-price dg-price-date">Disponível em 08/05/26</p>
+                </div>
+              </div>
+              <div class="dg-list-item">
+                <img src="img/list-outbound.jpg" alt="Outbound" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">Outbound</p>
+                  <p class="dg-list-price dg-price-date">Disponível em 11/05/26</p>
+                </div>
+              </div>
+              <div class="dg-list-item">
+                <img src="img/list-nitro-gen.jpg" alt="Nitro Gen Omega" class="dg-list-thumb" />
+                <div class="dg-list-info">
+                  <p class="dg-list-name">NITRO GEN OMEGA</p>
+                  <div class="dg-price-row">
+                    <span class="dg-badge">-10%</span>
+                    <span class="dg-price-old">R$ 129,99</span>
+                    <span class="dg-list-price">R$ 116,10</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== MAIS POPULARES ==================== -->
+    <section class="dg-section">
+      <div class="dg-section-inner">
+        <div class="dg-section-header">
+          <h2 class="dg-section-title">Mais populares <img src="img/icon-section-arrow.svg" class="dg-title-arrow" alt="" /></h2>
+          <div class="dg-nav-arrows">
+            <button class="dg-arrow-btn"><img src="img/icon-arrow-left.svg" class="dg-arrow-icon dg-arrow-icon--left" alt="" /></button>
+            <button class="dg-arrow-btn"><img src="img/icon-arrow-right.svg" class="dg-arrow-icon" alt="" /></button>
+          </div>
+        </div>
+        <div class="dg-cards-row">
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-gta5.jpg" alt="GTA V Enhanced" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Steam</span>
+              <p class="dg-game-title">Grand Theft Auto V Enhanced</p>
+              <p class="dg-game-price">R$ 149,99</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-valorant.jpg" alt="VALORANT" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Riot Games</span>
+              <p class="dg-game-title">VALORANT</p>
+              <p class="dg-game-price dg-price-free">Gratuito</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-ea-fc26.jpg" alt="EA FC 26" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">PSN</span>
+              <p class="dg-game-title">Edição de ÍDOLOS do EA SPORTS FC™ 26</p>
+              <p class="dg-game-price">R$ 379,99</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-marvel-rivals.jpg" alt="Marvel Rivals" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Origin</span>
+              <p class="dg-game-title">Marvel Rivals</p>
+              <p class="dg-game-price dg-price-free">Gratuito</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-popular5.jpg" alt="Crosshair X" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Amazon</span>
+              <p class="dg-game-title">Crosshair X</p>
+              <p class="dg-game-price">R$ 26,99</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-popular6.jpg" alt="Wuthering Waves" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Kabum</span>
+              <p class="dg-game-title">Wuthering Waves</p>
+              <p class="dg-game-price dg-price-free">Gratuito</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== BANNER FORTNITE / STAR WARS ==================== -->
+    <section class="dg-section dg-banner-section">
+      <div class="dg-section-inner dg-banner-inner">
+        <div class="dg-banner-wrap">
+          <img src="img/banner-fortnite-bg.jpg" alt="Esta semana no Fortnite" class="dg-banner-bg" />
+          <div class="dg-banner-content">
+            <div class="dg-banner-logos">
+              <img src="img/banner-image2.png" alt="Star Wars" class="dg-banner-logo1" />
+              <div class="dg-banner-divider"></div>
+              <img src="img/banner-image3.png" alt="Fortnite" class="dg-banner-logo2" />
+            </div>
+            <div class="dg-banner-text">
+              <h2 class="dg-banner-title">Esta semana no Fortnite</h2>
+              <p class="dg-banner-desc">Confira todas as novidades do Fortnite em um só lugar.</p>
+            </div>
+            <button class="dg-btn dg-btn-white">Descubra já</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== EXCLUSIVIDADE DA STEAM ==================== -->
+    <section class="dg-section">
+      <div class="dg-section-inner">
+        <div class="dg-section-header">
+          <h2 class="dg-section-title">Exclusividade da Steam <img src="img/icon-section-arrow.svg" class="dg-title-arrow" alt="" /></h2>
+          <div class="dg-nav-arrows">
+            <button class="dg-arrow-btn"><img src="img/icon-arrow-left.svg" class="dg-arrow-icon dg-arrow-icon--left" alt="" /></button>
+            <button class="dg-arrow-btn"><img src="img/icon-arrow-right.svg" class="dg-arrow-icon" alt="" /></button>
+          </div>
+        </div>
+        <div class="dg-cards-row">
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-heirloom.jpg" alt="The Heirloom" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Steam</span>
+              <p class="dg-game-title">The Heirloom</p>
+              <p class="dg-game-price dg-price-date">Em breve</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-scientific-project.jpg" alt="Scientific Project: Optic" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Steam</span>
+              <p class="dg-game-title">Scientific Project: Optic</p>
+              <p class="dg-game-price">R$ 46,99</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-guards2.jpg" alt="Guards II" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Steam</span>
+              <p class="dg-game-title">Guards ll: Chaos In Hell</p>
+              <p class="dg-game-price">R$ 2,64</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-raven2.jpg" alt="RAVEN2" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Steam</span>
+              <p class="dg-game-title">RAVEN2</p>
+              <p class="dg-game-price dg-price-free">Gratuito</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-farcana.jpg" alt="Farcana" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Steam</span>
+              <p class="dg-game-title">Farcana</p>
+              <p class="dg-game-price dg-price-date">Em breve</p>
+            </div>
+          </div>
+          <div class="dg-game-card">
+            <div class="dg-game-card-img-wrap">
+              <img src="img/card-atlas-wars.jpg" alt="Atlas Wars" class="dg-game-card-img" />
+            </div>
+            <div class="dg-game-card-info">
+              <span class="dg-platform">Steam</span>
+              <p class="dg-game-title">Atlas Wars</p>
+              <p class="dg-game-price dg-price-free">Gratuito</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== OFERTAS / JOGOS GRÁTIS / APLICATIVOS ==================== -->
+    <section class="dg-section dg-promo-section">
+      <div class="dg-section-inner">
+        <div class="dg-promo-grid">
+          <div class="dg-promo-card">
+            <img src="img/promo-ofertas.jpg" alt="Ofertas e promoções" class="dg-promo-img" />
+            <div class="dg-promo-body">
+              <p class="dg-promo-title">Ofertas e promoções</p>
+              <p class="dg-promo-desc">Economize muito em títulos de sucesso e verdadeiros tesouros. Tem sempre algo em promoção na Drop Games Store!</p>
+            </div>
+            <button class="dg-btn dg-btn-dark dg-promo-btn">Navegar</button>
+          </div>
+          <div class="dg-promo-card">
+            <img src="img/promo-jogos-gratis.jpg" alt="Jogos grátis" class="dg-promo-img" />
+            <div class="dg-promo-body">
+              <p class="dg-promo-title">Jogos grátis</p>
+              <p class="dg-promo-desc">Explore jogos gratuitos e grátis para jogar de nossa coleção. Volte toda quinta-feira para um novo jogo grátis!</p>
+            </div>
+            <button class="dg-btn dg-btn-dark dg-promo-btn">Compare agora</button>
+          </div>
+          <div class="dg-promo-card">
+            <img src="img/promo-aplicativos.jpg" alt="Aplicativos" class="dg-promo-img" />
+            <div class="dg-promo-body">
+              <p class="dg-promo-title">Aplicativos</p>
+              <p class="dg-promo-desc">Volte toda quinta-feira para um novo jogo grátis! Curta alguns dos melhores aplicativos para música, jogos, criação.</p>
+            </div>
+            <button class="dg-btn dg-btn-dark dg-promo-btn">Navegar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="dg-footer">
+    <div class="dg-footer-inner">
+      <a href="#" class="dg-logo">
+        <img src="img/logo-dropgames-footer.svg" alt="DropGames" class="dg-logo-img" />
+      </a>
+      <nav class="dg-footer-nav">
+        <a href="index.html">Descobrir</a>
+        <a href="sobre-nos.html">Sobre nós</a>
+        <a href="dados.html">Dados</a>
+        <a href="suporte.html">Suporte</a>
+        <a href="#">Help</a>
+        <a href="#">Privacy</a>
+      </nav>
+    </div>
+    <div class="dg-footer-bottom">
+      <span>Drop Games. All rights reserved</span>
+      <nav class="dg-footer-legal">
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="#">Cookies</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/hero-carousel.js"></script>
+</body>
+</html>

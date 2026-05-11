@@ -1,0 +1,150 @@
+/* ============================================================
+   CONTATO ENVIADO — page-specific styles
+   ============================================================ */
+
+.dg-success-page {
+  background-color: #0a0a0a;
+}
+
+.dg-nav-link--active {
+  color: #fff;
+}
+
+/* ============================================================
+   SUCCESS SECTION
+   ============================================================ */
+.dg-success-section {
+  background-color: #0a0a0a;
+  min-height: 960px;
+  padding: 80px;
+  display: flex;
+  align-items: center;
+}
+
+.dg-success-inner {
+  display: flex;
+  gap: 64px;
+  align-items: center;
+  max-width: 1011px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ---- Left card ---- */
+.dg-success-card {
+  width: 371px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+}
+
+.dg-success-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.dg-success-icon-wrap {
+  background-color: #0a0a0a;
+  border: 1px solid #404040;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dg-success-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.dg-success-text {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.dg-success-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: normal;
+}
+
+.dg-success-desc {
+  font-size: 16px;
+  font-weight: 400;
+  color: #a3a3a3;
+  margin: 0;
+  line-height: normal;
+}
+
+.dg-success-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 40px;
+  background-color: #00bfff;
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgba(137,150,163,.14), 0 0 2px rgba(137,150,163,.12);
+}
+
+.dg-success-btn:hover {
+  background-color: #00aadd;
+  color: #000;
+}
+
+/* ---- Right image panel ---- */
+.dg-success-img-panel {
+  width: 576px;
+  height: 800px;
+  background-color: #25bcff;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.dg-success-mario {
+  position: absolute;
+  left: 37px;
+  top: 0;
+  width: 502px;
+  height: 838px;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+  .dg-success-section { padding: 60px 40px; }
+  .dg-success-inner { flex-direction: column; gap: 48px; align-items: center; }
+  .dg-success-img-panel { width: 100%; max-width: 576px; }
+}
+
+@media (max-width: 768px) {
+  .dg-success-section { padding: 48px 24px; min-height: auto; }
+  .dg-success-card { width: 100%; max-width: 371px; }
+  .dg-success-img-panel { height: 400px; }
+  .dg-success-mario { width: 280px; height: auto; left: 50%; transform: translateX(-50%); }
+}

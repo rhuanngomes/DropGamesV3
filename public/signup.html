@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastrar — DropGames</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/login.css" />
+  <link rel="stylesheet" href="css/signup.css" />
+</head>
+<body class="dg-login-page">
+
+  <!-- ==================== LEFT: FORM ==================== -->
+  <div class="dg-login-left">
+
+    <!-- Logo -->
+    <a href="index.html" class="dg-login-logo">
+      <img src="img/logo-dropgames.svg" alt="DropGames" />
+    </a>
+
+    <!-- Form centered -->
+    <div class="dg-login-form-wrap">
+      <form class="dg-login-form" action="#" novalidate>
+
+        <!-- Heading -->
+        <div class="dg-login-heading-block">
+          <p class="dg-login-title">Cadastre-se</p>
+          <p class="dg-login-subtitle">Inicie o seu trial de 30 dias gratuito</p>
+        </div>
+
+        <!-- Nome -->
+        <div class="dg-login-field">
+          <label class="dg-login-label" for="signup-nome">Nome</label>
+          <div class="dg-login-input-wrap">
+            <input id="signup-nome" type="text" class="dg-login-input" placeholder="Seu nome" />
+          </div>
+          <span class="dg-field-error" id="signup-nome-error"></span>
+        </div>
+
+        <!-- Email -->
+        <div class="dg-login-field">
+          <label class="dg-login-label" for="signup-email">Email</label>
+          <div class="dg-login-input-wrap">
+            <input id="signup-email" type="email" class="dg-login-input" placeholder="Seu email" />
+          </div>
+          <span class="dg-field-error" id="signup-email-error"></span>
+        </div>
+
+        <!-- Senha -->
+        <div class="dg-login-field">
+          <label class="dg-login-label" for="signup-password">Senha</label>
+          <div class="dg-login-input-wrap">
+            <input id="signup-password" type="password" class="dg-login-input" placeholder="*********" />
+            <img src="img/login-eye.svg" alt="Mostrar senha" class="dg-login-eye" id="toggle-signup-password" />
+          </div>
+          <span class="dg-field-error" id="signup-password-error"></span>
+        </div>
+
+        <!-- Critérios de senha -->
+        <div class="dg-signup-criteria">
+          <div class="dg-signup-criteria-item">
+            <img src="img/signup-check.svg" alt="" class="dg-signup-check-icon" />
+            <span>A senha deve ter no mínimo 8 caracteres.</span>
+          </div>
+          <div class="dg-signup-criteria-item">
+            <img src="img/signup-check.svg" alt="" class="dg-signup-check-icon" />
+            <span>Deve conter ao menos 1 letra maiúscula.</span>
+          </div>
+          <div class="dg-signup-criteria-item">
+            <img src="img/signup-check.svg" alt="" class="dg-signup-check-icon" />
+            <span>Deve conter ao menos 1 número.</span>
+          </div>
+          <div class="dg-signup-criteria-item">
+            <img src="img/signup-check.svg" alt="" class="dg-signup-check-icon" />
+            <span>Deve conter ao menos 1 caractere especial</span>
+          </div>
+          <div class="dg-signup-criteria-item">
+            <img src="img/signup-check.svg" alt="" class="dg-signup-check-icon" />
+            <span>Não use senhas comuns ou fáceis de adivinhar.</span>
+          </div>
+          <div class="dg-signup-criteria-item">
+            <img src="img/signup-check.svg" alt="" class="dg-signup-check-icon" />
+            <span>Evite repetições como 1111 ou aaaa.</span>
+          </div>
+          <div class="dg-signup-criteria-item">
+            <img src="img/signup-check.svg" alt="" class="dg-signup-check-icon" />
+            <span>Evite sequências como 123 ou abc.</span>
+          </div>
+        </div>
+
+        <!-- Comece agora -->
+        <button type="submit" class="dg-login-btn-primary">Comece agora</button>
+
+        <!-- Google -->
+        <button type="button" class="dg-login-btn-google">
+          <img src="img/login-google-icon.png" alt="Google" class="dg-login-google-icon" />
+          Cadastrar com o Google
+        </button>
+
+        <!-- Já tem conta -->
+        <div class="dg-login-signup-row">
+          <span>Ja possui uma conta?</span>
+          <a href="login.html">Entrar</a>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Copyright -->
+    <p class="dg-login-copyright">Drop Games. All rights reserved. 2026</p>
+
+  </div>
+
+  <!-- ==================== RIGHT: VIDEO ==================== -->
+  <div class="dg-login-right">
+    <video
+      class="dg-login-video"
+      src="img/signup-video.mp4"
+      autoplay
+      loop
+      playsinline
+      muted
+    ></video>
+  </div>
+
+  <script src="js/signup.js"></script>
+</body>
+</html>

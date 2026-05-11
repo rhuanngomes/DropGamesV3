@@ -1,0 +1,819 @@
+/* ============================================================
+   DROPGAMES — Custom stylesheet
+   Bootstrap 5.3 is loaded via CDN; this file handles overrides
+   and all custom components.
+   ============================================================ */
+
+/* ---- Variables ------------------------------------------- */
+:root {
+  --dg-bg:          #0e0d0d;
+  --dg-surface-01:  #1e2228;
+  --dg-surface-02:  #28282d;
+  --dg-surface-btn: #353539;
+  --dg-surface-dark:#343437;
+
+  --dg-text-base:   #e9edf2;
+  --dg-text-muted:  #6b7682;
+  --dg-text-subtle: rgba(255,255,255,0.70);
+
+  --dg-accent:      #00bfff;
+  --dg-badge:       #25bcff;
+
+  --dg-radius-sm:   4px;
+  --dg-radius:      6px;
+  --dg-radius-pill: 10px;
+
+  --dg-shadow: 0 1px 2px rgba(137,150,163,.14), 0 0 2px rgba(137,150,163,.12);
+}
+
+/* ---- Reset / Base ---------------------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--dg-bg);
+  color: var(--dg-text-base);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.dg-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 72px;
+  background-color: var(--dg-bg);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.dg-header-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 80px 0 112px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+/* Logo */
+.dg-logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.dg-logo-img {
+  width: 122px;
+  height: 22px;
+  display: block;
+}
+
+/* Nav links */
+.dg-nav {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+}
+
+.dg-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dg-text-base);
+  border-radius: var(--dg-radius);
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+.dg-nav-link:hover { color: var(--dg-accent); }
+.dg-nav-chevron {
+  width: 24px;
+  height: 24px;
+  display: block;
+  flex-shrink: 0;
+  transform: rotate(90deg);
+}
+
+/* Right actions */
+.dg-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* ---- Buttons --------------------------------------------- */
+.dg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0 12px;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: var(--dg-radius);
+  transition: opacity 0.15s, background-color 0.15s;
+  white-space: nowrap;
+  box-shadow: var(--dg-shadow);
+}
+.dg-btn:hover { opacity: 0.88; }
+
+.dg-btn-ghost {
+  background: transparent;
+  color: var(--dg-text-base);
+  box-shadow: none;
+  padding: 0;
+  width: 32px;
+}
+.dg-btn-ghost svg { opacity: 0.75; }
+
+.dg-btn-secondary {
+  background-color: var(--dg-surface-btn);
+  color: var(--dg-text-base);
+}
+
+.dg-btn-primary {
+  background-color: var(--dg-accent);
+  color: #181b1f;
+}
+
+.dg-btn-dark {
+  background-color: var(--dg-surface-dark);
+  color: var(--dg-text-base);
+  height: 40px;
+  font-size: 16px;
+  padding: 0 14px;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.dg-hero {
+  background-color: var(--dg-bg);
+  padding: 81px 80px;
+}
+
+.dg-hero-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+}
+
+/* Featured image */
+.dg-hero-featured {
+  width: 938px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dg-hero-img-wrap {
+  position: relative;
+  overflow: hidden;
+  height: 638px;
+  transition: opacity 0.4s ease;
+}
+
+.dg-hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dg-hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dg-hero-img-wrap.dg-hero-fading {
+  opacity: 0;
+}
+
+.dg-hero-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 62px;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dg-hero-game-logo-img {
+  object-fit: contain;
+}
+
+.dg-hero-desc {
+  font-size: 12px;
+  color: var(--dg-text-base);
+  max-width: 323px;
+  line-height: 20px;
+}
+
+.dg-hero-cta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dg-hero-platforms {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dg-hero-platforms img { height: 26px; width: auto; object-fit: contain; }
+
+/* Sidebar */
+.dg-hero-sidebar {
+  width: 246px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  justify-content: space-between;
+  height: 638px;
+}
+
+.dg-hero-card {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.dg-hero-card-img {
+  width: 116px;
+  height: 143px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.dg-hero-card-info {
+  width: 114px;
+  height: 143px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dg-hero-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dg-hero-card-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--dg-text-base);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.dg-hero-card-desc {
+  font-size: 11px;
+  color: #859097;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.dg-stars-img {
+  width: 92px;
+  height: 20px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   GENERIC SECTION
+   ============================================================ */
+.dg-section {
+  background-color: var(--dg-bg);
+  padding: 0 0 99px;
+}
+
+.dg-section-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.dg-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dg-section-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 11.22px;
+}
+.dg-title-arrow {
+  width: 8px;
+  height: 13px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Navigation arrows */
+.dg-nav-arrows { display: flex; gap: 10px; align-items: center; }
+.dg-arrow-btn {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.dg-arrow-icon {
+  width: 30px;
+  height: 30px;
+  display: block;
+  flex-shrink: 0;
+}
+.dg-arrow-icon--left { transform: scaleX(-1); }
+
+/* ============================================================
+   GAME CARDS (row of 6)
+   ============================================================ */
+.dg-cards-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 18px;
+}
+
+.dg-game-card {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.dg-game-card-img-wrap {
+  overflow: hidden;
+  aspect-ratio: 202/266;
+}
+
+.dg-game-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+.dg-game-card:hover .dg-game-card-img { transform: scale(1.03); }
+
+.dg-game-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dg-platform {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dg-text-subtle);
+  line-height: 1;
+}
+
+.dg-game-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dg-text-base);
+  line-height: 1.35;
+}
+
+.dg-game-price {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--dg-text-base);
+  letter-spacing: -0.28px;
+}
+.dg-price-date { color: var(--dg-text-muted); }
+.dg-price-free  { color: var(--dg-accent); }
+
+/* ============================================================
+   PROMO BANNERS (3 columns)
+   ============================================================ */
+.dg-promo-section { padding-top: 0; }
+
+.dg-promo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.dg-promo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 23px;
+  cursor: pointer;
+}
+
+.dg-promo-img {
+  width: 100%;
+  height: 194px;
+  object-fit: cover;
+}
+
+.dg-promo-body {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.dg-promo-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 16px;
+}
+
+.dg-promo-desc {
+  font-size: 14px;
+  color: var(--dg-text-muted);
+  line-height: 1.5;
+  letter-spacing: -0.28px;
+}
+
+.dg-promo-btn { align-self: flex-start; }
+
+/* ============================================================
+   3-COLUMN LIST SECTION
+   ============================================================ */
+.dg-lists-section { padding-top: 0; }
+
+.dg-lists-grid {
+  display: flex;
+  align-items: flex-start;
+}
+
+.dg-list-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* 96px between column content and its trailing divider */
+.dg-list-col:not(:last-child) { padding-right: 96px; }
+/* 15px between a divider and the next column */
+.dg-list-divider + .dg-list-col { padding-left: 15px; }
+
+.dg-list-divider {
+  width: 1px;
+  align-self: stretch;
+  background-color: var(--dg-surface-02);
+  flex-shrink: 0;
+}
+
+.dg-list-title { font-size: 16px; }
+
+.dg-list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dg-list-item {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.dg-list-thumb {
+  width: 49px;
+  height: 65px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.dg-list-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dg-list-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dg-text-base);
+  letter-spacing: -0.28px;
+  line-height: 1.5;
+}
+
+.dg-list-price {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--dg-text-base);
+  letter-spacing: -0.28px;
+}
+
+/* Price row with badge */
+.dg-price-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.dg-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding: 0 8px;
+  background-color: var(--dg-badge);
+  color: #000;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--dg-radius-pill);
+  letter-spacing: -0.24px;
+  white-space: nowrap;
+}
+
+.dg-price-old {
+  font-size: 14px;
+  color: var(--dg-text-muted);
+  letter-spacing: -0.28px;
+  text-decoration: line-through;
+  text-decoration-color: var(--dg-text-muted);
+}
+
+/* ============================================================
+   FORTNITE BANNER SECTION
+   ============================================================ */
+.dg-banner-section { padding-top: 0; }
+
+.dg-banner-inner {
+  align-items: center;
+}
+
+.dg-banner-wrap {
+  position: relative;
+  width: 1070px;
+  height: 397px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.dg-banner-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dg-banner-content {
+  position: absolute;
+  left: 359px;
+  top: 161px;
+  width: 351px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+}
+
+.dg-banner-logos {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.dg-banner-logo1 { width: 132px; height: 37px; object-fit: contain; }
+.dg-banner-logo2 { width: 103px; height: 44px; object-fit: contain; }
+
+.dg-banner-divider {
+  width: 2px;
+  height: 54px;
+  background-color: #d9d9d9;
+  flex-shrink: 0;
+}
+
+.dg-banner-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.dg-banner-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  letter-spacing: -0.4px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.dg-banner-desc {
+  font-size: 14px;
+  color: var(--dg-text-base);
+  text-align: center;
+  letter-spacing: -0.28px;
+  margin: 0;
+}
+
+.dg-btn-white {
+  background-color: #fff;
+  color: #000;
+  height: 40px;
+  font-size: 16px;
+  padding: 0 14px;
+  font-weight: 500;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.dg-footer {
+  background-color: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 308px;
+  padding: 40px 80px;
+  gap: 64px;
+}
+
+.dg-footer-inner {
+  width: 1280px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.dg-footer-nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.dg-footer-nav a {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dg-text-muted);
+  transition: color 0.15s;
+}
+.dg-footer-nav a:hover { color: var(--dg-text-base); }
+
+.dg-footer-bottom {
+  width: 1280px;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--dg-text-muted);
+  padding-top: 0;
+}
+
+.dg-footer-legal {
+  display: flex;
+  gap: 32px;
+}
+
+.dg-footer-legal a {
+  font-size: 14px;
+  color: var(--dg-text-muted);
+  transition: color 0.15s;
+}
+.dg-footer-legal a:hover { color: var(--dg-text-base); }
+
+/* ============================================================
+   RESPONSIVENESS
+   ============================================================ */
+@media (max-width: 1200px) {
+  .dg-hero         { padding: 48px 40px; }
+  .dg-section-inner { padding: 0 40px; }
+  .dg-footer       { padding: 48px 40px 0; }
+
+  .dg-cards-row    { grid-template-columns: repeat(3, 1fr); }
+  .dg-promo-grid   { grid-template-columns: repeat(2, 1fr); }
+  .dg-lists-grid   { flex-direction: column; gap: 32px; }
+  .dg-list-divider { display: none; }
+  .dg-list-col:not(:last-child) { padding-right: 0; }
+  .dg-list-divider + .dg-list-col { padding-left: 0; }
+}
+
+@media (max-width: 768px) {
+  .dg-header-inner  { padding: 0 24px; gap: 16px; }
+  .dg-nav           { display: none; }
+  .dg-hero          { padding: 32px 24px; }
+  .dg-hero-inner    { flex-direction: column; padding: 0; }
+  .dg-hero-sidebar  { width: 100%; }
+  .dg-section-inner { padding: 0 24px; }
+  .dg-section       { padding-bottom: 48px; }
+  .dg-footer        { padding: 32px 24px 0; }
+
+  .dg-cards-row  { grid-template-columns: repeat(2, 1fr); }
+  .dg-promo-grid { grid-template-columns: 1fr; }
+
+  .dg-hero-overlay { padding: 24px; }
+}
+
+@media (max-width: 480px) {
+  .dg-cards-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+}
+
+.dg-header-notif {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dg-notif-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.dg-notif-badge {
+  position: absolute;
+  left: 19px;
+  top: -1px;
+  width: 14px;
+  height: 14px;
+  background: #dc2626;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.dg-header-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 100px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.dg-header-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ============================================================
+   AUTH STATE — must come last to win the cascade
+   ============================================================ */
+.dg-logged-only { display: none; }

@@ -1,0 +1,59 @@
+/* ============================================================
+   SIGNUP — extends login.css
+   ============================================================ */
+
+/* ---- Field error messages ---- */
+.dg-field-error {
+  display: none;
+  font-size: 12px;
+  font-weight: 400;
+  color: #ef4444;
+  line-height: normal;
+}
+
+.dg-input-error {
+  border-color: #ef4444 !important;
+}
+
+/* ---- Password criteria list ---- */
+.dg-signup-criteria {
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+}
+
+.dg-signup-criteria-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  overflow: hidden;
+  max-height: 28px;
+  opacity: 1;
+  margin-bottom: 13px;
+  transition: opacity 0.35s ease, max-height 0.35s ease, margin-bottom 0.35s ease;
+}
+
+.dg-signup-criteria-item:last-child {
+  margin-bottom: 0;
+}
+
+.dg-signup-criteria-item.criterio-met {
+  opacity: 0;
+  max-height: 0;
+  margin-bottom: 0;
+}
+
+.dg-signup-check-icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.dg-signup-criteria-item span {
+  font-size: 14px;
+  font-weight: 400;
+  color: #a3a3a3;
+  line-height: normal;
+  font-family: 'Inter', sans-serif;
+}

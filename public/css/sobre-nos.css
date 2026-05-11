@@ -1,0 +1,483 @@
+/* ============================================================
+   SOBRE NÓS — page-specific styles
+   Shared components (header, footer, buttons) live in styles.css
+   ============================================================ */
+
+.dg-about-page {
+  background-color: #0a0a0a;
+}
+
+/* ---- Active nav link ---------------------------------------- */
+.dg-nav-link--active {
+  color: #fff;
+}
+
+/* ---- Shared label (small section eyebrow) ------------------- */
+.dg-about-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: normal;
+}
+
+/* ---- Buttons (large variant + outline-dark) ----------------- */
+.dg-btn-lg {
+  height: 48px;
+  padding: 0 16px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+.dg-btn-outline-dark {
+  background: transparent;
+  border: 1px solid #404040;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(137,150,163,.14), 0 0 2px rgba(137,150,163,.12);
+}
+.dg-btn-outline-dark:hover { border-color: #666; }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.dg-about-hero {
+  background-color: #0a0a0a;
+  padding: 96px 80px;
+}
+
+.dg-about-hero-inner {
+  max-width: 768px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+}
+
+.dg-about-heading {
+  font-size: 48px;
+  font-weight: 600;
+  color: #fff;
+  line-height: normal;
+  margin: 0;
+}
+
+.dg-about-subheading {
+  font-size: 16px;
+  font-weight: 400;
+  color: #a3a3a3;
+  line-height: normal;
+  margin: 0;
+}
+
+/* ============================================================
+   TEAM SECTION
+   ============================================================ */
+.dg-team-section {
+  background-color: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
+}
+
+/* Team header */
+.dg-team-header {
+  width: 100%;
+  padding: 96px 80px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.dg-team-header-text {
+  max-width: 768px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+}
+
+.dg-team-heading {
+  font-size: 36px;
+  font-weight: 600;
+  color: #fff;
+  line-height: normal;
+  margin: 0;
+}
+
+.dg-team-subheading {
+  font-size: 16px;
+  font-weight: 400;
+  color: #a3a3a3;
+  line-height: normal;
+  margin: 0;
+}
+
+.dg-team-header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Team grid */
+.dg-team-grid {
+  width: 904px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding-bottom: 96px;
+}
+
+.dg-team-row {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.dg-team-row--centered {
+  justify-content: center;
+}
+
+.dg-team-card {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dg-team-photo-wrap {
+  width: 280px;
+  height: 280px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dg-team-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dg-team-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dg-team-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: normal;
+}
+
+.dg-team-role {
+  font-size: 16px;
+  font-weight: 400;
+  color: #d4d4d4;
+  margin: 0;
+  line-height: normal;
+}
+
+.dg-team-desc {
+  font-size: 16px;
+  font-weight: 400;
+  color: #a3a3a3;
+  margin: 0;
+  line-height: normal;
+}
+
+/* ============================================================
+   FEATURES SECTION
+   ============================================================ */
+.dg-features-section {
+  background-color: #0a0a0a;
+  padding: 59px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+
+.dg-features-header {
+  max-width: 770px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+}
+
+.dg-features-heading {
+  font-size: 36px;
+  font-weight: 600;
+  color: #fff;
+  line-height: normal;
+  margin: 0;
+}
+
+.dg-features-grid {
+  max-width: 1177px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 64px 32px;
+}
+
+.dg-feature-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.dg-feature-icon-wrap {
+  background-color: #0a0a0a;
+  border: 1px solid #404040;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dg-feature-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.dg-feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dg-feature-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: normal;
+}
+
+.dg-feature-desc {
+  font-size: 16px;
+  font-weight: 400;
+  color: #a3a3a3;
+  margin: 0;
+  line-height: normal;
+}
+
+/* ============================================================
+   ORIGIN SECTION
+   ============================================================ */
+.dg-origin-section {
+  background-color: #0a0a0a;
+  min-height: 688px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 80px;
+}
+
+.dg-origin-inner {
+  display: flex;
+  gap: 64px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1216px;
+}
+
+.dg-origin-text {
+  width: 576px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.dg-origin-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dg-origin-heading {
+  font-size: 36px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: normal;
+}
+
+.dg-origin-desc {
+  font-size: 16px;
+  font-weight: 400;
+  color: #a3a3a3;
+  margin: 0;
+  line-height: normal;
+}
+
+.dg-origin-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Image collage */
+.dg-collage {
+  width: 576px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.dg-collage-row {
+  display: flex;
+  gap: 16px;
+}
+
+.dg-collage-row--top  { align-items: flex-end; }
+.dg-collage-row--bottom { align-items: flex-start; }
+
+.dg-collage-img {
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dg-collage-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dg-collage-img--sq160 { width: 160px; height: 160px; }
+.dg-collage-img--p160  { width: 160px; height: 240px; }
+.dg-collage-img--sq192 { width: 192px; height: 192px; }
+
+/* ============================================================
+   CTA SECTION
+   ============================================================ */
+.dg-about-cta {
+  background-color: #171717;
+  min-height: 392px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 74px 80px;
+}
+
+.dg-about-cta-inner {
+  max-width: 768px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  text-align: center;
+}
+
+.dg-about-cta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dg-about-cta-heading {
+  font-size: 36px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: normal;
+}
+
+.dg-about-cta-sub {
+  font-size: 20px;
+  font-weight: 400;
+  color: #a3a3a3;
+  margin: 0;
+  line-height: normal;
+}
+
+.dg-about-cta-form {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.dg-about-input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 345px;
+}
+
+.dg-about-input-group {
+  height: 48px;
+}
+
+.dg-about-input {
+  width: 100%;
+  height: 48px;
+  background-color: #0a0a0a;
+  border: 1px solid #404040;
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: 16px;
+  color: #e9edf2;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+}
+
+.dg-about-input::placeholder { color: #737373; }
+.dg-about-input:focus { border-color: #666; }
+
+.dg-about-input-hint {
+  font-size: 14px;
+  font-weight: 400;
+  color: #a3a3a3;
+  margin: 0;
+  text-align: left;
+  line-height: normal;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+  .dg-team-grid { width: 100%; padding: 0 40px 60px; }
+  .dg-features-grid { grid-template-columns: repeat(2, 1fr); }
+  .dg-collage { width: 100%; max-width: 400px; }
+  .dg-origin-text { width: auto; flex: 1; }
+}
+
+@media (max-width: 768px) {
+  .dg-about-hero { padding: 60px 24px; }
+  .dg-about-heading { font-size: 32px; }
+  .dg-team-header { padding: 60px 24px 0; }
+  .dg-team-row { flex-direction: column; align-items: center; }
+  .dg-team-card { width: 100%; max-width: 320px; }
+  .dg-team-photo-wrap { width: 100%; }
+  .dg-features-section { padding: 48px 24px; }
+  .dg-features-grid { grid-template-columns: 1fr; gap: 40px; }
+  .dg-origin-section { padding: 60px 24px; }
+  .dg-origin-inner { flex-direction: column; gap: 40px; }
+  .dg-origin-text { width: 100%; }
+  .dg-collage { width: 100%; }
+  .dg-about-cta { padding: 48px 24px; }
+  .dg-about-cta-form { flex-direction: column; align-items: center; width: 100%; }
+  .dg-about-input-wrap { width: 100%; }
+}

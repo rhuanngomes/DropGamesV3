@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dados — DropGames</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/dados.css" />
+  <script src="js/auth.js" defer></script>
+</head>
+<body class="dg-dados-page">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="dg-header">
+    <div class="dg-header-inner">
+      <a href="index.html" class="dg-logo">
+        <img src="img/logo-dropgames.svg" alt="DropGames" class="dg-logo-img" />
+      </a>
+
+      <nav class="dg-nav">
+        <a href="index.html" class="dg-nav-link">Descobrir <img src="img/icon-chevron.svg" class="dg-nav-chevron" alt="" /></a>
+        <a href="sobre-nos.html" class="dg-nav-link">Sobre nós <img src="img/icon-chevron.svg" class="dg-nav-chevron" alt="" /></a>
+        <a href="dados.html" class="dg-nav-link dg-nav-link--active">Dados</a>
+        <a href="suporte.html" class="dg-nav-link">Suporte</a>
+      </nav>
+
+      <div class="dg-header-actions">
+        <button class="dg-btn dg-btn-ghost">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </button>
+        <a href="login.html" class="dg-btn dg-btn-secondary dg-auth-only">Entrar</a>
+        <a href="signup.html" class="dg-btn dg-btn-primary dg-auth-only">Cadastrar</a>
+        <div class="dg-header-notif dg-logged-only">
+          <img src="img/header-bell.svg" alt="" class="dg-notif-icon" />
+          <span class="dg-notif-badge">2</span>
+        </div>
+        <div class="dg-header-avatar dg-logged-only">
+          <img src="img/header-avatar.jpg" alt="Perfil" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ==================== HERO ==================== -->
+    <section class="dg-dados-hero">
+      <div class="dg-dados-hero-inner">
+        <p class="dg-dados-label">Pesquisa e dados</p>
+        <div>
+          <h1 class="dg-dados-heading">Os números que nos fizeram construir o DropGames</h1>
+        </div>
+        <p class="dg-dados-subheading">Antes de qualquer linha de código, estudamos o mercado. Aqui estão os dados reais sobre o jogador brasileiro que embasaram cada decisão do projeto, da interface ao escopo de funcionalidades.</p>
+      </div>
+    </section>
+
+    <!-- ==================== STATS ==================== -->
+    <section class="dg-dados-stats">
+      <div class="dg-dados-stats-inner">
+        <!-- Left: image -->
+        <img src="img/dados-stats-image.jpg" alt="" class="dg-dados-stats-img" />
+
+        <!-- Right: content -->
+        <div class="dg-dados-stats-content">
+          <div class="dg-dados-stats-header">
+            <p class="dg-dados-label">O mercado que nos motivou</p>
+            <h2 class="dg-dados-stats-heading">Estamos só no começo dessa jornada.</h2>
+          </div>
+
+          <div class="dg-dados-stats-grid">
+            <div class="dg-dados-stats-row">
+              <div class="dg-dados-stat">
+                <p class="dg-dados-stat-number">82,8%</p>
+                <p class="dg-dados-stat-desc">Dos brasileiros consomem jogos digitais em 2025</p>
+              </div>
+              <div class="dg-dados-stat">
+                <p class="dg-dados-stat-number">103 mi</p>
+                <p class="dg-dados-stat-desc">de jogadores no Brasil</p>
+              </div>
+            </div>
+            <div class="dg-dados-stats-row">
+              <div class="dg-dados-stat">
+                <p class="dg-dados-stat-number">R$12 BI</p>
+                <p class="dg-dados-stat-desc">Movimentados pelo mercado de games no Brasil</p>
+              </div>
+              <div class="dg-dados-stat">
+                <p class="dg-dados-stat-number">05</p>
+                <p class="dg-dados-stat-desc">Lojas onde os preços do jogo variam 40% sem ninguem ver</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== STORY ==================== -->
+    <section class="dg-dados-story">
+      <div class="dg-dados-story-inner">
+        <!-- Header -->
+        <div class="dg-dados-story-header">
+          <div class="dg-dados-story-titles">
+            <p class="dg-dados-label">Nossa história</p>
+            <h2 class="dg-dados-story-heading">Comceçamos do zero. Assim como todo bom jogo.</h2>
+          </div>
+          <p class="dg-dados-story-sub">It is a long established fact that a reader will be distracted by the readable</p>
+        </div>
+
+        <!-- Two-column text -->
+        <div class="dg-dados-story-cols">
+          <div class="dg-dados-story-col">
+            <p>A ideia do DropGames surgiu de uma observação simples: o Brasil é um dos maiores mercados de games do mundo, com mais de 103 milhões de jogadores, mas ainda não tinha um comparador de preços feito para o jogador brasileiro de verdade.</p>
+            <p>As ferramentas existentes eram globais, em inglês, com preços em dólar e interfaces confusas que cansavam mais do que ajudavam. Antes de escrever uma linha de código, o grupo estudou o comportamento de compra do gamer nacional. Os dados da Pesquisa Game Brasil 2025 mostram que 82,8% dos brasileiros consomem jogos digitais, mas a maioria ainda compra sem comparar preços entre lojas. Isso significa dinheiro desperdiçado toda semana, em escala nacional.</p>
+            <p>A partir desses dados, definimos o escopo: um comparador focado no Brasil, em português, com preços em real, que centralizasse Steam, Epic, Origin e outras lojas em uma tela só. Simples na aparência, mas construído sobre uma pesquisa séria sobre como o jogador brasileiro decide uma compra.</p>
+          </div>
+          <div class="dg-dados-story-col">
+            <p>O perfil do gamer brasileiro também nos surpreendeu durante a pesquisa. A maioria dos jogadores pertence à classe média, totalizando 64,8% do público, e as faixas etárias mais representadas são de 30 a 34 anos e de 35 a 39 anos. Não é um público de adolescentes com tempo livre. São adultos com orçamento definido que precisam tomar decisões de compra inteligentes.</p>
+            <p>As plataformas preferidas são smartphones, com 48,8%, seguidos por computadores, com 22,6%, e consoles, com 21,7%. Isso reforçou uma decisão central do projeto: o DropGames precisava ser responsivo e funcionar bem em qualquer tela, especialmente no celular.</p>
+            <p>Com esse embasamento, o grupo dividiu responsabilidades, criou os wireframes, codificou cada página e entregou a primeira versão em março de 2026. O que você vê hoje é o resultado direto dessa pesquisa aplicada a código real.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== FEATURES ==================== -->
+    <section class="dg-dados-features">
+      <div class="dg-dados-features-header">
+        <h2 class="dg-dados-features-heading">Um projeto com propósito.</h2>
+        <p class="dg-dados-features-sub">Cada decisão do DropGames foi baseada em dados reais sobre como o jogador brasileiro compra, economiza e joga.</p>
+      </div>
+
+      <div class="dg-dados-features-list">
+
+        <!-- Feature 1: text left, image right -->
+        <div class="dg-dados-feature-row">
+          <div class="dg-dados-feature-inner">
+            <div class="dg-dados-feature-text">
+              <div class="dg-dados-feature-header">
+                <div class="dg-dados-feature-icon">
+                  <img src="img/icon-feature.svg" alt="" />
+                </div>
+                <div class="dg-dados-feature-titles">
+                  <p class="dg-dados-feature-title">O problema que resolvemos</p>
+                  <p class="dg-dados-feature-desc">O gamer brasileiro gasta tempo e dinheiro desnecessários na hora de comprar um jogo. Sem uma ferramenta centralizada em português, a decisão de compra depende de sorte, de grupos de WhatsApp ou de amigos que acompanham promoções o tempo todo.</p>
+                </div>
+              </div>
+              <div class="dg-dados-bullets">
+                <div class="dg-dados-bullet">
+                  <img src="img/dados-bullet.svg" alt="" class="dg-dados-bullet-icon" />
+                  <p class="dg-dados-bullet-text">Preços variam entre lojas sem aviso</p>
+                </div>
+                <div class="dg-dados-bullet">
+                  <img src="img/dados-bullet.svg" alt="" class="dg-dados-bullet-icon" />
+                  <p class="dg-dados-bullet-text">Promoções têm prazo e o jogador perde por falta de informação</p>
+                </div>
+                <div class="dg-dados-bullet">
+                  <img src="img/dados-bullet.svg" alt="" class="dg-dados-bullet-icon" />
+                  <p class="dg-dados-bullet-text">Interfaces de comparadores globais são pouco acessíveis</p>
+                </div>
+              </div>
+            </div>
+            <img src="img/dados-feature1.jpg" alt="" class="dg-dados-feature-img" />
+          </div>
+        </div>
+
+        <!-- Feature 2: image left, text right -->
+        <div class="dg-dados-feature-row">
+          <div class="dg-dados-feature-inner">
+            <img src="img/dados-feature2.jpg" alt="" class="dg-dados-feature-img" />
+            <div class="dg-dados-feature-text">
+              <div class="dg-dados-feature-header">
+                <div class="dg-dados-feature-icon">
+                  <img src="img/icon-feature.svg" alt="" />
+                </div>
+                <div class="dg-dados-feature-titles">
+                  <p class="dg-dados-feature-title">Como chegamos na solução</p>
+                  <p class="dg-dados-feature-desc">Mapeamos o comportamento de compra de jogadores em diferentes plataformas e faixas de renda. Identificamos que o maior valor de um comparador não é mostrar o menor preço, mas traduzir a confusão do mercado em uma tela clara.</p>
+                </div>
+              </div>
+              <div class="dg-dados-bullets">
+                <div class="dg-dados-bullet">
+                  <img src="img/dados-bullet.svg" alt="" class="dg-dados-bullet-icon" />
+                  <p class="dg-dados-bullet-text">Uma tela. Todas as lojas. O melhor preço.</p>
+                </div>
+                <div class="dg-dados-bullet">
+                  <img src="img/dados-bullet.svg" alt="" class="dg-dados-bullet-icon" />
+                  <p class="dg-dados-bullet-text">Interface em português, preços em real</p>
+                </div>
+                <div class="dg-dados-bullet">
+                  <img src="img/dados-bullet.svg" alt="" class="dg-dados-bullet-icon" />
+                  <p class="dg-dados-bullet-text">Desenvolvido por gamers, para gamers</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature 3: text left, image right (with crop) -->
+        <div class="dg-dados-feature-row">
+          <div class="dg-dados-feature-inner">
+            <div class="dg-dados-feature-text">
+              <div class="dg-dados-feature-header">
+                <div class="dg-dados-feature-icon">
+                  <img src="img/icon-feature.svg" alt="" />
+                </div>
+                <div class="dg-dados-feature-titles">
+                  <p class="dg-dados-feature-title">O que vem pela frente</p>
+                  <p class="dg-dados-feature-desc">O DropGames está em evolução contínua. Com a base estática entregue na Fase 1 e a interatividade da Fase 2, as próximas entregas incluem comparação de preços em tempo real, histórico de preços e recomendações por IA baseadas no perfil do usuário.</p>
+                </div>
+              </div>
+              <div class="dg-dados-bullets">
+                <div class="dg-dados-bullet">
+                  <img src="img/dados-bullet.svg" alt="" class="dg-dados-bullet-icon" />
+                  <p class="dg-dados-bullet-text">Integração com APIs de lojas parceiras</p>
+                </div>
+                <div class="dg-dados-bullet">
+                  <img src="img/dados-bullet.svg" alt="" class="dg-dados-bullet-icon" />
+                  <p class="dg-dados-bullet-text">Histórico e gráfico de evolução de preços</p>
+                </div>
+                <div class="dg-dados-bullet">
+                  <img src="img/dados-bullet.svg" alt="" class="dg-dados-bullet-icon" />
+                  <p class="dg-dados-bullet-text">Recomendações personalizadas por IA</p>
+                </div>
+              </div>
+            </div>
+            <div class="dg-dados-feature-img-wrap">
+              <img src="img/dados-feature3.jpg" alt="" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== CTA ==================== -->
+    <section class="dg-dados-cta">
+      <div class="dg-dados-cta-inner">
+        <div class="dg-dados-cta-text">
+          <h2 class="dg-dados-cta-heading">Seu próximo jogo pode estar em promoção agora.</h2>
+          <p class="dg-dados-cta-sub">Cadastre seu e-mail e seja o primeiro a saber quando o preço cair.</p>
+        </div>
+        <div class="dg-dados-cta-form">
+          <div class="dg-dados-input-wrap">
+            <input type="email" class="dg-dados-input" placeholder="Enter your email" />
+            <p class="dg-dados-input-hint">Seus dados estão seguros. Consulte nossa política de privacidade</p>
+          </div>
+          <button class="dg-btn dg-btn-primary dg-btn-lg">Receber alertas</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="dg-footer">
+    <div class="dg-footer-inner">
+      <a href="index.html" class="dg-logo">
+        <img src="img/logo-dropgames-footer.svg" alt="DropGames" class="dg-logo-img" />
+      </a>
+      <nav class="dg-footer-nav">
+        <a href="index.html">Descobrir</a>
+        <a href="sobre-nos.html">Sobre nós</a>
+        <a href="dados.html">Dados</a>
+        <a href="suporte.html">Suporte</a>
+        <a href="#">Help</a>
+        <a href="#">Privacy</a>
+      </nav>
+    </div>
+    <div class="dg-footer-bottom">
+      <span>Drop Games. All rights reserved</span>
+      <nav class="dg-footer-legal">
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="#">Cookies</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
