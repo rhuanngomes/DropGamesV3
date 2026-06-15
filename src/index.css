@@ -1,0 +1,37 @@
+@import url('/css/styles.css');
+@import url('/css/login.css');
+@import url('/css/signup.css');
+@import url('/css/sobre-nos.css');
+@import url('/css/dados.css');
+@import url('/css/suporte.css');
+@import url('/css/contato-enviado.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-dg-bg text-dg-text font-sans;
+  }
+}
+
+.dg-hero-game-logo-img {
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.dg-hero-card {
+  text-align: left;
+}
+
+.dg-hero-card-text {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.dg-hero-card-title,
+.dg-hero-card-desc {
+  text-align: left;
+}
