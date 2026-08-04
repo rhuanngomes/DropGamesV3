@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
-import { PageShell } from '../components/Layout.jsx';
-import { GameSection, PromoSection } from '../components/Cards.jsx';
+import { GameComparison, GameSection, PromoSection } from '../components/games/index.js';
+import { PageShell } from '../components/layout/index.js';
+import { useGames } from '../hooks/index.js';
+import { formatPrice, getBestOffer } from '../services/index.js';
 import {
   bottomPromos,
   featuredGames,
   listColumns,
   newDiscoveries,
-  popularGames,
   sidebarGames,
   steamGames,
   topPromos,
-  weeklyDeals,
-} from '../data/homeData.js';
+} from '../data/home/index.js';
+
+function getGameDetailUrl(title, id) {
+  if (id) return `/jogo?gameID=${encodeURIComponent(id)}`;
+  return `/jogo?title=${encodeURIComponent(title.replace(/\.\.\.$/, '').trim())}`;
+}
 
 function Hero() {
   const [active, setActive] = useState(0);
@@ -27,7 +32,9 @@ function Hero() {
       <div className="dg-hero-inner">
         <div className="dg-hero-featured">
           <div className="dg-hero-img-wrap">
-            <video className="dg-hero-video" src={`/img/${game.video}`} poster={`/img/${game.poster}`} autoPlay loop playsInline muted />
+            <a href={getGameDetailUrl(game.title)} className="dg-hero-media-link" aria-label={`Ver detalhes de ${game.title}`}>
+              <video className="dg-hero-video" src={`/img/${game.video}`} poster={`/img/${game.poster}`} autoPlay loop playsInline muted />
+            </a>
             <div className="dg-hero-overlay">
               <div className="dg-hero-game-logo">
                 <img
@@ -39,7 +46,7 @@ function Hero() {
               </div>
               <p className="dg-hero-desc">{game.desc}</p>
               <div className="dg-hero-cta">
-                <button className="dg-btn dg-btn-dark">Compare agora</button>
+                <a href={getGameDetailUrl(game.title)} className="dg-btn dg-btn-dark">Compare agora</a>
                 <div className="dg-hero-platforms">
                   <img src="/img/platform-steam.png" alt="Steam" />
                   <img src="/img/platform-ps.png" alt="PlayStation" />
@@ -51,8 +58,10 @@ function Hero() {
 
         <aside className="dg-hero-sidebar">
           {sidebarGames.map(([image, title, desc, featuredIndex]) => (
-            <button key={title} className="dg-hero-card" onClick={() => setActive(featuredIndex)}>
-              <img src={`/img/${image}`} alt={title} className="dg-hero-card-img" />
+            <div key={title} className="dg-hero-card" onMouseEnter={() => setActive(featuredIndex)} onFocus={() => setActive(featuredIndex)}>
+              <a href={getGameDetailUrl(title)} aria-label={`Ver detalhes de ${title}`}>
+                <img src={`/img/${image}`} alt={title} className="dg-hero-card-img" />
+              </a>
               <div className="dg-hero-card-info">
                 <div className="dg-hero-card-text">
                   <p className="dg-hero-card-title">{title}</p>
@@ -60,7 +69,7 @@ function Hero() {
                 </div>
                 <img src="/img/icon-stars.svg" className="dg-stars-img" alt="Avaliação" />
               </div>
-            </button>
+            </div>
           ))}
         </aside>
       </div>
@@ -83,7 +92,7 @@ function ListSection() {
                 </h2>
                 <div className="dg-list-items">
                   {column.items.map(([image, title, price, badge, oldPrice]) => (
-                    <div className="dg-list-item" key={`${column.title}-${title}`}>
+                    <a href={getGameDetailUrl(title)} className="dg-list-item" key={`${column.title}-${title}`}>
                       <img src={`/img/${image}`} alt={title} className="dg-list-thumb" />
                       <div className="dg-list-info">
                         <p className="dg-list-name">{title}</p>
@@ -97,7 +106,7 @@ function ListSection() {
                           <p className={`dg-list-price ${price.includes('Disponível') ? 'dg-price-date' : ''}`}>{price}</p>
                         )}
                       </div>
-                    </div>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -134,14 +143,29 @@ function FortniteBanner() {
 }
 
 export default function HomePage() {
+  const gamesApi = useGames();
+  const apiDeals = gamesApi.games.slice(0, 6).map((game) => {
+    const offer = getBestOffer(game);
+
+    return {
+      id: game.id,
+      image: game.image,
+      title: game.title,
+      platform: offer.store,
+      price: formatPrice(offer.price, gamesApi.currency),
+      priceClass: offer.price === 0 ? 'dg-price-free' : '',
+    };
+  });
+
   return (
     <PageShell active="/">
       <Hero />
-      <GameSection title="Melhores preços da semana" games={weeklyDeals} />
+      <GameComparison {...gamesApi} />
+      <GameSection title="Melhores preços da semana" games={apiDeals} />
       <PromoSection promos={topPromos} />
       <GameSection title="Descubra algo novo" games={newDiscoveries} />
       <ListSection />
-      <GameSection title="Mais populares" games={popularGames} />
+      <GameSection title="Mais populares" games={apiDeals.slice(0, 6)} />
       <FortniteBanner />
       <GameSection title="Exclusividade da Steam" games={steamGames} />
       <PromoSection promos={bottomPromos} />

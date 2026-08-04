@@ -211,10 +211,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   display: block;
 }
 
-.dg-hero-img-wrap.dg-hero-fading {
-  opacity: 0;
-}
-
 .dg-hero-overlay {
   position: absolute;
   bottom: 0;

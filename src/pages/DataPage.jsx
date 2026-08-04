@@ -1,4 +1,4 @@
-import { PageShell } from '../components/Layout.jsx';
+import { PageShell } from '../components/layout/index.js';
 
 const stats = [
   ['82,8%', 'Dos brasileiros consomem jogos digitais em 2025'],

@@ -1,15 +1,5 @@
 export const featuredGames = [
   {
-    title: 'The Last of Us Part I & II',
-    desc: 'Viva desde o início os premiados jogos que inspiraram a série de TV, com as edições definitivas dessas duas histórias memoráveis e emocionantes oferecidas em conjunto pela primeira vez em uma coleção completa.',
-    video: 'video-tlou.mp4',
-    poster: 'hero-main.jpg',
-    logo: 'hero-logo-tlou.png',
-    logoAlt: 'The Last of Us logo',
-    logoMaxWidth: 220,
-    logoMaxHeight: 150,
-  },
-  {
     title: 'Resident Evil Requiem',
     desc: 'A história de Requiem se passa em outubro de 2026, 28 anos após a destruição de Raccoon City. Uma nova ameaça biológica emerge e apenas uma agente pode detê-la.',
     video: 'video-re.mp4',
@@ -52,19 +42,10 @@ export const featuredGames = [
 ];
 
 export const sidebarGames = [
-  ['sidebar-resident-evil.jpg', 'Resident Evil Requiem', 'A história de Requiem se passa em outubro de 2026, 28 anos após a destruição d...', 1],
-  ['sidebar-nioh3.jpg', 'Nioh 3', 'No terceiro jogo da série sombria de RPG de ação com samurais Nioh, você...', 2],
-  ['sidebar-monster-hunter.jpg', 'Monster Hunter Stories 3', 'Monster Hunter Stories 3 é o novo capítulo da sub-série, cuja jogabilidade é...', 3],
-  ['sidebar-ride6.jpg', 'RIDE 6', 'A nova versão traz um leque ainda maior de veículos licenciados, pistas...', 4],
-];
-
-export const weeklyDeals = [
-  { image: 'card-baldurs-gate.jpg', title: "Baldur's Gate 3", platform: 'PSN', price: 'R$ 79,90' },
-  { image: 'card-astrobot.jpg', title: 'Astrobot', platform: 'PSN', price: 'R$ 49,90' },
-  { image: 'card-elden-ring.jpg', title: 'Elden Ring: Shadow of the Erdtree', platform: 'PSN', price: 'R$ 29,90' },
-  { image: 'card-witcher3.jpg', title: 'The Witcher 3: Wild Hunt', platform: 'Epic Games', price: 'R$ 149,90' },
-  { image: 'card-metaphor.jpg', title: 'Metaphor: ReFantazio', platform: 'Amazon', price: 'R$ 99,90' },
-  { image: 'card-god-of-war.jpg', title: 'God of War: Ragnarok', platform: 'Kabum', price: 'R$ 319,90' },
+  ['sidebar-resident-evil.jpg', 'Resident Evil Requiem', 'A história de Requiem se passa em outubro de 2026, 28 anos após a destruição d...', 0],
+  ['sidebar-nioh3.jpg', 'Nioh 3', 'No terceiro jogo da série sombria de RPG de ação com samurais Nioh, você...', 1],
+  ['sidebar-monster-hunter.jpg', 'Monster Hunter Stories 3', 'Monster Hunter Stories 3 é o novo capítulo da sub-série, cuja jogabilidade é...', 2],
+  ['sidebar-ride6.jpg', 'RIDE 6', 'A nova versão traz um leque ainda maior de veículos licenciados, pistas...', 3],
 ];
 
 export const newDiscoveries = [
@@ -74,15 +55,6 @@ export const newDiscoveries = [
   { image: 'card-mixtape.jpg', title: 'Mixtape', platform: 'Epic Games', price: 'R$ 149,90' },
   { image: 'card-lords-fallen.jpg', title: 'Lords of the Fallen II', platform: 'Amazon', price: 'Em breve', priceClass: 'dg-price-date' },
   { image: 'card-arc-raiders.jpg', title: 'ARC Raiders', platform: 'Kabum', price: 'R$ 171,80' },
-];
-
-export const popularGames = [
-  { image: 'card-gta5.jpg', title: 'Grand Theft Auto V Enhanced', platform: 'Steam', price: 'R$ 149,99' },
-  { image: 'card-valorant.jpg', title: 'VALORANT', platform: 'Riot Games', price: 'Gratuito', priceClass: 'dg-price-free' },
-  { image: 'card-ea-fc26.jpg', title: 'Edição de ÍDOLOS do EA SPORTS FC™ 26', platform: 'PSN', price: 'R$ 379,99' },
-  { image: 'card-marvel-rivals.jpg', title: 'Marvel Rivals', platform: 'Origin', price: 'Gratuito', priceClass: 'dg-price-free' },
-  { image: 'card-popular5.jpg', title: 'Crosshair X', platform: 'Amazon', price: 'R$ 26,99' },
-  { image: 'card-popular6.jpg', title: 'Wuthering Waves', platform: 'Kabum', price: 'Gratuito', priceClass: 'dg-price-free' },
 ];
 
 export const steamGames = [
