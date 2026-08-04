@@ -13,18 +13,20 @@ export function SectionHeader({ title }) {
   );
 }
 
-export function GameCard({ image, title, platform, price, priceClass = '' }) {
+export function GameCard({ id, image, title, platform, price, priceClass = '' }) {
+  const imageSrc = image?.startsWith('http') ? image : `/img/${image}`;
+
   return (
-    <div className="dg-game-card">
+    <a className="dg-game-card" href={getGameDetailUrl(title, id)}>
       <div className="dg-game-card-img-wrap">
-        <img src={`/img/${image}`} alt={title} className="dg-game-card-img" />
+        <img src={imageSrc} alt={title} className="dg-game-card-img" />
       </div>
       <div className="dg-game-card-info">
         <span className="dg-platform">{platform}</span>
         <p className="dg-game-title">{title}</p>
         <p className={`dg-game-price ${priceClass}`}>{price}</p>
       </div>
-    </div>
+    </a>
   );
 }
 
@@ -43,14 +45,14 @@ export function GameSection({ title, games }) {
 
 export function PromoCard({ image, title, desc, button }) {
   return (
-    <div className="dg-promo-card">
+    <a href={getGameDetailUrl(title)} className="dg-promo-card">
       <img src={`/img/${image}`} alt={title} className="dg-promo-img" />
       <div className="dg-promo-body">
         <p className="dg-promo-title">{title}</p>
         <p className="dg-promo-desc">{desc}</p>
       </div>
-      <button className="dg-btn dg-btn-dark dg-promo-btn">{button}</button>
-    </div>
+      <span className="dg-btn dg-btn-dark dg-promo-btn">{button}</span>
+    </a>
   );
 }
 
@@ -78,4 +80,9 @@ export function FeatureCard({ title, desc }) {
       </div>
     </div>
   );
+}
+
+function getGameDetailUrl(title, id) {
+  if (id) return `/jogo?gameID=${encodeURIComponent(id)}`;
+  return `/jogo?title=${encodeURIComponent(title.replace(/\.\.\.$/, '').trim())}`;
 }

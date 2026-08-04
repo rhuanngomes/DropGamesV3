@@ -1,5 +1,5 @@
-import { PageShell } from '../components/Layout.jsx';
-import { FeatureCard } from '../components/Cards.jsx';
+import { FeatureCard } from '../components/games/index.js';
+import { PageShell } from '../components/layout/index.js';
 
 const team = [
   ['team-member-1.jpg', 'Gabriela de Souza Neves', 'Design e apresentação', 'Responsável pela identidade visual, wireframes e pela forma como o DropGames se comunica visualmente.'],

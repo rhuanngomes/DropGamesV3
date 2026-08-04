@@ -1,0 +1,117 @@
+{
+  "updatedAt": "2026-08-03T12:00:00-03:00",
+  "source": "DropGames simulated store API",
+  "games": [
+    {
+      "id": 1,
+      "slug": "baldurs-gate-3",
+      "title": "Baldur's Gate 3",
+      "image": "card-baldurs-gate.jpg",
+      "genre": "RPG",
+      "score": 96,
+      "tags": ["RPG", "Cooperativo", "História"],
+      "prices": [
+        { "store": "PSN", "platform": "PlayStation", "price": 79.9, "regularPrice": 199.9, "discount": 60 },
+        { "store": "Steam", "platform": "PC", "price": 119.99, "regularPrice": 199.99, "discount": 40 },
+        { "store": "Epic Games", "platform": "PC", "price": 109.9, "regularPrice": 199.9, "discount": 45 }
+      ]
+    },
+    {
+      "id": 2,
+      "slug": "astrobot",
+      "title": "Astrobot",
+      "image": "card-astrobot.jpg",
+      "genre": "Aventura",
+      "score": 94,
+      "tags": ["Família", "Plataforma", "PlayStation"],
+      "prices": [
+        { "store": "PSN", "platform": "PlayStation", "price": 49.9, "regularPrice": 299.9, "discount": 83 },
+        { "store": "Amazon", "platform": "PlayStation", "price": 229.9, "regularPrice": 299.9, "discount": 23 },
+        { "store": "Kabum", "platform": "PlayStation", "price": 219.9, "regularPrice": 299.9, "discount": 27 }
+      ]
+    },
+    {
+      "id": 3,
+      "slug": "elden-ring-shadow-of-the-erdtree",
+      "title": "Elden Ring: Shadow of the Erdtree",
+      "image": "card-elden-ring.jpg",
+      "genre": "Ação RPG",
+      "score": 95,
+      "tags": ["Soulslike", "DLC", "Fantasia"],
+      "prices": [
+        { "store": "PSN", "platform": "PlayStation", "price": 29.9, "regularPrice": 199.9, "discount": 85 },
+        { "store": "Steam", "platform": "PC", "price": 99.99, "regularPrice": 199.99, "discount": 50 },
+        { "store": "Nuuvem", "platform": "PC", "price": 89.99, "regularPrice": 199.99, "discount": 55 }
+      ]
+    },
+    {
+      "id": 4,
+      "slug": "the-witcher-3",
+      "title": "The Witcher 3: Wild Hunt",
+      "image": "card-witcher3.jpg",
+      "genre": "RPG",
+      "score": 93,
+      "tags": ["Mundo aberto", "História", "Fantasia"],
+      "prices": [
+        { "store": "Epic Games", "platform": "PC", "price": 149.9, "regularPrice": 199.9, "discount": 25 },
+        { "store": "Steam", "platform": "PC", "price": 39.99, "regularPrice": 129.99, "discount": 69 },
+        { "store": "GOG", "platform": "PC", "price": 44.99, "regularPrice": 129.99, "discount": 65 }
+      ]
+    },
+    {
+      "id": 5,
+      "slug": "metaphor-refantazio",
+      "title": "Metaphor: ReFantazio",
+      "image": "card-metaphor.jpg",
+      "genre": "JRPG",
+      "score": 92,
+      "tags": ["Turnos", "Anime", "Atlus"],
+      "prices": [
+        { "store": "Amazon", "platform": "PlayStation", "price": 99.9, "regularPrice": 349.9, "discount": 71 },
+        { "store": "Steam", "platform": "PC", "price": 249.9, "regularPrice": 349.9, "discount": 29 },
+        { "store": "PSN", "platform": "PlayStation", "price": 279.9, "regularPrice": 349.9, "discount": 20 }
+      ]
+    },
+    {
+      "id": 6,
+      "slug": "god-of-war-ragnarok",
+      "title": "God of War: Ragnarok",
+      "image": "card-god-of-war.jpg",
+      "genre": "Ação",
+      "score": 94,
+      "tags": ["Aventura", "História", "PlayStation"],
+      "prices": [
+        { "store": "Kabum", "platform": "PlayStation", "price": 319.9, "regularPrice": 349.9, "discount": 9 },
+        { "store": "PSN", "platform": "PlayStation", "price": 249.9, "regularPrice": 349.9, "discount": 29 },
+        { "store": "Steam", "platform": "PC", "price": 229.9, "regularPrice": 249.9, "discount": 8 }
+      ]
+    },
+    {
+      "id": 7,
+      "slug": "grand-theft-auto-v-enhanced",
+      "title": "Grand Theft Auto V Enhanced",
+      "image": "card-gta5.jpg",
+      "genre": "Ação",
+      "score": 88,
+      "tags": ["Mundo aberto", "Online", "Crime"],
+      "prices": [
+        { "store": "Steam", "platform": "PC", "price": 149.99, "regularPrice": 149.99, "discount": 0 },
+        { "store": "Epic Games", "platform": "PC", "price": 74.99, "regularPrice": 149.99, "discount": 50 },
+        { "store": "PSN", "platform": "PlayStation", "price": 89.9, "regularPrice": 149.9, "discount": 40 }
+      ]
+    },
+    {
+      "id": 8,
+      "slug": "valorant",
+      "title": "VALORANT",
+      "image": "card-valorant.jpg",
+      "genre": "FPS",
+      "score": 86,
+      "tags": ["Competitivo", "Gratuito", "Riot Games"],
+      "prices": [
+        { "store": "Riot Games", "platform": "PC", "price": 0, "regularPrice": 0, "discount": 0 },
+        { "store": "Epic Games", "platform": "PC", "price": 0, "regularPrice": 0, "discount": 0 }
+      ]
+    }
+  ]
+}

@@ -2,6 +2,7 @@ const navItems = [
   { href: '/', label: 'Descobrir', chevron: true },
   { href: '/sobre-nos', label: 'Sobre nós', chevron: true },
   { href: '/dados', label: 'Dados' },
+  { href: '/seguranca', label: 'Segurança' },
   { href: '/suporte', label: 'Suporte' },
 ];
 

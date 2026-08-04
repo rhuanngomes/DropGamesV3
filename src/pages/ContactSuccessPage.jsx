@@ -1,4 +1,4 @@
-import { PageShell } from '../components/Layout.jsx';
+import { PageShell } from '../components/layout/index.js';
 
 export default function ContactSuccessPage() {
   return (
