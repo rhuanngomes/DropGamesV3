@@ -132,6 +132,12 @@
   border-color: #666;
 }
 
+.dg-contact-input:focus-visible,
+.dg-contact-checkbox:focus-visible {
+  outline: 3px solid #00bfff;
+  outline-offset: 2px;
+}
+
 /* ---- Checkbox ---- */
 .dg-contact-checkbox-wrap {
   display: flex;
