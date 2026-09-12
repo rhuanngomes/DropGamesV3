@@ -58,18 +58,24 @@ function Hero() {
 
         <aside className="dg-hero-sidebar">
           {sidebarGames.map(([image, title, desc, featuredIndex]) => (
-            <div key={title} className="dg-hero-card" onMouseEnter={() => setActive(featuredIndex)} onFocus={() => setActive(featuredIndex)}>
-              <a href={getGameDetailUrl(title)} aria-label={`Ver detalhes de ${title}`}>
-                <img src={`/img/${image}`} alt={title} className="dg-hero-card-img" />
-              </a>
+            <a
+              key={title}
+              href={getGameDetailUrl(title)}
+              className="dg-hero-card"
+              onMouseEnter={() => setActive(featuredIndex)}
+              onFocus={() => setActive(featuredIndex)}
+            >
+              <img src={`/img/${image}`} alt="" className="dg-hero-card-img" />
               <div className="dg-hero-card-info">
                 <div className="dg-hero-card-text">
                   <p className="dg-hero-card-title">{title}</p>
                   <p className="dg-hero-card-desc">{desc}</p>
                 </div>
-                <img src="/img/icon-stars.svg" className="dg-stars-img" alt="Avaliação" />
+                <span className="dg-stars-img" role="img" aria-label="Avaliação: 5 de 5 estrelas">
+                  <img src="/img/icon-stars.svg" alt="" aria-hidden="true" />
+                </span>
               </div>
-            </div>
+            </a>
           ))}
         </aside>
       </div>

@@ -1,3 +1,5 @@
+import { SkipLink } from './SkipLink.jsx';
+
 const navItems = [
   { href: '/', label: 'Descobrir', chevron: true },
   { href: '/sobre-nos', label: 'Sobre nós', chevron: true },
@@ -79,8 +81,9 @@ export function Footer() {
 export function PageShell({ active, bodyClass, children }) {
   return (
     <div className={bodyClass || 'min-h-screen'}>
+      <SkipLink />
       <Header active={active} />
-      <main>{children}</main>
+      <main id="main-content" tabIndex={-1}>{children}</main>
       <Footer />
     </div>
   );
