@@ -187,6 +187,7 @@ export default function GamerProfilePage() {
           <p>Conecte a Steam quando houver uma conta com biblioteca ou use um perfil demonstrativo para apresentar o motor de match agora.</p>
           <button type="button" className="dg-steam-login-btn" onClick={handleSteamLogin}>Entrar com Steam</button>
           <DemoProfilePicker profiles={demoProfiles} onSelect={activateDemoProfile} />
+          <a href="/" className="dg-gamer-skip">Fazer isso depois e voltar à DropGames</a>
         </section>
       </main>
     );
@@ -284,6 +285,7 @@ function PrivacyConsentGate({ onAccept, message }) {
       </div>
       {message && <span className="dg-field-error">{message}</span>}
       <button type="button" className="dg-steam-login-btn" onClick={() => onAccept(settings)}>Aceitar e continuar</button>
+      <a href="/" className="dg-gamer-skip">Agora não. Continuar sem o DNA gamer</a>
     </section>
   );
 }

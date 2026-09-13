@@ -1,120 +1,88 @@
+import { useEffect, useState } from 'react';
 import { PageShell } from '../components/layout/index.js';
+import { getAdminMetrics, getEmailSession } from '../services/index.js';
+import { projectUsers } from '../utils/userProjection.js';
 
-const stats = [
-  ['82,8%', 'Dos brasileiros consomem jogos digitais em 2025'],
-  ['103 mi', 'de jogadores no Brasil'],
-  ['R$12 BI', 'Movimentados pelo mercado de games no Brasil'],
-  ['05', 'Lojas onde os preços do jogo variam 40% sem ninguem ver'],
+const mockInsights = [
+  { label: 'Retenção em 7 dias', value: '68%', trend: '+4,2%', note: 'Coorte demonstrativa' },
+  { label: 'Ofertas visualizadas', value: '1.284', trend: '+12,6%', note: 'Últimas 24 horas · mock' },
+  { label: 'Alertas criados', value: '186', trend: '+8,1%', note: 'Últimos 7 dias · mock' },
+  { label: 'Conversão em oferta', value: '14,7%', trend: '+1,8%', note: 'Amostra demonstrativa' },
 ];
 
-const featureRows = [
-  {
-    title: 'O problema que resolvemos',
-    desc: 'O gamer brasileiro gasta tempo e dinheiro desnecessários na hora de comprar um jogo. Sem uma ferramenta centralizada em português, a decisão de compra depende de sorte, de grupos de WhatsApp ou de amigos que acompanham promoções o tempo todo.',
-    image: 'dados-feature1.jpg',
-    bullets: ['Preços variam entre lojas sem aviso', 'Promoções têm prazo e o jogador perde por falta de informação', 'Interfaces de comparadores globais são pouco acessíveis'],
-  },
-  {
-    title: 'Como chegamos na solução',
-    desc: 'Mapeamos o comportamento de compra de jogadores em diferentes plataformas e faixas de renda. Identificamos que o maior valor de um comparador não é mostrar o menor preço, mas traduzir a confusão do mercado em uma tela clara.',
-    image: 'dados-feature2.jpg',
-    reverse: true,
-    bullets: ['Uma tela. Todas as lojas. O melhor preço.', 'Interface em português, preços em real', 'Desenvolvido por gamers, para gamers'],
-  },
-  {
-    title: 'O que vem pela frente',
-    desc: 'O DropGames está em evolução contínua. Com a base estática entregue na Fase 1 e a interatividade da Fase 2, as próximas entregas incluem comparação de preços em tempo real, histórico de preços e recomendações por IA baseadas no perfil do usuário.',
-    image: 'dados-feature3.jpg',
-    wrapped: true,
-    bullets: ['Integração com APIs de lojas parceiras', 'Histórico e gráfico de evolução de preços', 'Recomendações personalizadas por IA'],
-  },
-];
+function GrowthModel() {
+  const [values, setValues] = useState({ initialUsers: 1000, monthlyRate: 5, months: 12 });
+  const series = projectUsers(values);
+  const result = series.at(-1).users;
+  const update = (field) => (event) => {
+    const limits = field === 'monthlyRate' ? [-50, 50] : field === 'months' ? [1, 36] : [1, 1000000];
+    const value = Math.min(limits[1], Math.max(limits[0], Number(event.target.value) || limits[0]));
+    setValues((current) => ({ ...current, [field]: value }));
+  };
 
-function FeatureText({ row }) {
-  return (
-    <div className="dg-dados-feature-text">
-      <div className="dg-dados-feature-header">
-        <div className="dg-dados-feature-icon"><img src="/img/icon-feature.svg" alt="" /></div>
-        <div className="dg-dados-feature-titles"><p className="dg-dados-feature-title">{row.title}</p><p className="dg-dados-feature-desc">{row.desc}</p></div>
-      </div>
-      <div className="dg-dados-bullets">
-        {row.bullets.map((bullet) => (
-          <div className="dg-dados-bullet" key={bullet}>
-            <img src="/img/dados-bullet.svg" alt="" className="dg-dados-bullet-icon" />
-            <p className="dg-dados-bullet-text">{bullet}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  return <section className="dg-admin-panel dg-admin-model">
+    <div className="dg-admin-panel-heading"><div><p className="dg-admin-eyebrow">Planejamento</p><h2>Imagine o próximo capítulo.</h2></div><p>Uma simulação simples para explorar a evolução da comunidade. Não representa uma previsão.</p></div>
+    <div className="dg-admin-model-body"><div className="dg-admin-model-fields">
+      <label>Base atual<input type="number" min="1" max="1000000" value={values.initialUsers} onChange={update('initialUsers')} /></label>
+      <label>Variação mensal<input type="number" min="-50" max="50" value={values.monthlyRate} onChange={update('monthlyRate')} /><span>%</span></label>
+      <label>Período<input type="number" min="1" max="36" value={values.months} onChange={update('months')} /><span>meses</span></label>
+    </div><div className="dg-admin-model-result"><span>Cenário ao final do período</span><strong>{Math.round(result).toLocaleString('pt-BR')}</strong><small>usuários estimados</small></div></div>
+  </section>;
+}
+
+function LoadingState() {
+  return <main className="dg-admin-gate"><div className="dg-admin-gate-card"><span className="dg-admin-spinner" /><p>Preparando sua visão do produto…</p></div></main>;
 }
 
 export default function DataPage() {
+  const [state, setState] = useState({ status: 'loading', metrics: null, user: null });
+
+  useEffect(() => {
+    let active = true;
+    Promise.all([getEmailSession(), getAdminMetrics()])
+      .then(([session, metrics]) => active && setState({ status: 'ready', metrics, user: session.user }))
+      .catch(() => active && setState({ status: 'denied', metrics: null, user: null }));
+    return () => { active = false; };
+  }, []);
+
+  if (state.status === 'loading') return <LoadingState />;
+  if (state.status === 'denied') {
+    return <main className="dg-admin-gate"><div className="dg-admin-gate-card"><p className="dg-admin-eyebrow">Área reservada</p><h1>Esta visão pede acesso de administrador.</h1><p>Entre com uma conta autorizada para acompanhar a operação da DropGames.</p><a className="dg-btn dg-btn-primary" href="/login">Entrar com outra conta</a></div></main>;
+  }
+
+  const { metrics, user } = state;
+  const primaryMetrics = [
+    { label: 'Agora na plataforma', value: metrics.activeUsers, note: 'sessões autenticadas ativas' },
+    { label: 'Contas cadastradas', value: metrics.registeredUsers, note: 'registros reais neste ambiente' },
+    { label: 'Tempo médio hoje', value: `${metrics.averageDailyMinutes} min`, note: 'por sessão autenticada' },
+    { label: 'Novas contas hoje', value: metrics.newUsersToday, note: 'desde 00:00' },
+  ];
+
   return (
-    <PageShell active="/dados" bodyClass="dg-dados-page min-h-screen">
-      <section className="dg-dados-hero">
-        <div className="dg-dados-hero-inner">
-          <p className="dg-dados-label">Pesquisa e dados</p>
-          <h1 className="dg-dados-heading">Os números que nos fizeram construir o DropGames</h1>
-          <p className="dg-dados-subheading">Antes de qualquer linha de código, estudamos o mercado. Aqui estão os dados reais sobre o jogador brasileiro que embasaram cada decisão do projeto, da interface ao escopo de funcionalidades.</p>
-        </div>
+    <PageShell active="/dados" bodyClass="dg-dados-page dg-admin-page min-h-screen">
+      <section className="dg-admin-hero">
+        <div><p className="dg-admin-eyebrow">Visão do produto</p><h1>O essencial, em um só olhar.</h1><p>Olá, {user.name.split(' ')[0]}. Acompanhe os sinais que ajudam a DropGames a ficar mais útil a cada dia.</p></div>
+        <span className="dg-admin-live"><i /> Atualizado agora</span>
       </section>
-      <section className="dg-dados-stats">
-        <div className="dg-dados-stats-inner">
-          <img src="/img/dados-stats-image.jpg" alt="" className="dg-dados-stats-img" />
-          <div className="dg-dados-stats-content">
-            <div className="dg-dados-stats-header"><p className="dg-dados-label">O mercado que nos motivou</p><h2 className="dg-dados-stats-heading">Estamos só no começo dessa jornada.</h2></div>
-            <div className="dg-dados-stats-grid">
-              {[0, 2].map((start) => (
-                <div className="dg-dados-stats-row" key={start}>
-                  {stats.slice(start, start + 2).map(([number, desc]) => (
-                    <div className="dg-dados-stat" key={number}><p className="dg-dados-stat-number">{number}</p><p className="dg-dados-stat-desc">{desc}</p></div>
-                  ))}
-                </div>
-              ))}
-            </div>
+
+      <section className="dg-admin-content">
+        <div className="dg-admin-kpis">
+          {primaryMetrics.map((item) => <article className="dg-admin-kpi" key={item.label}><p>{item.label}</p><strong>{item.value}</strong><span>{item.note}</span></article>)}
+        </div>
+
+        <section className="dg-admin-panel">
+          <div className="dg-admin-panel-heading"><div><p className="dg-admin-eyebrow">Pulso da experiência</p><h2>As pessoas estão encontrando valor.</h2></div><p>Indicadores de comportamento para orientar as próximas melhorias.</p></div>
+          <div className="dg-admin-insights">
+            {mockInsights.map((item) => <article key={item.label}><p>{item.label}</p><strong>{item.value}</strong><span className="dg-admin-trend">{item.trend}</span><small>{item.note}</small></article>)}
           </div>
-        </div>
-      </section>
-      <section className="dg-dados-story">
-        <div className="dg-dados-story-inner">
-          <div className="dg-dados-story-header">
-            <div className="dg-dados-story-titles"><p className="dg-dados-label">Nossa história</p><h2 className="dg-dados-story-heading">Comceçamos do zero. Assim como todo bom jogo.</h2></div>
-            <p className="dg-dados-story-sub">It is a long established fact that a reader will be distracted by the readable</p>
-          </div>
-          <div className="dg-dados-story-cols">
-            <div className="dg-dados-story-col">
-              <p>A ideia do DropGames surgiu de uma observação simples: o Brasil é um dos maiores mercados de games do mundo, com mais de 103 milhões de jogadores, mas ainda não tinha um comparador de preços feito para o jogador brasileiro de verdade.</p>
-              <p>As ferramentas existentes eram globais, em inglês, com preços em dólar e interfaces confusas que cansavam mais do que ajudavam.</p>
-              <p>A partir desses dados, definimos o escopo: um comparador focado no Brasil, em português, com preços em real, que centralizasse Steam, Epic, Origin e outras lojas em uma tela só.</p>
-            </div>
-            <div className="dg-dados-story-col">
-              <p>O perfil do gamer brasileiro também nos surpreendeu durante a pesquisa. A maioria dos jogadores pertence à classe média, totalizando 64,8% do público.</p>
-              <p>As plataformas preferidas são smartphones, com 48,8%, seguidos por computadores, com 22,6%, e consoles, com 21,7%.</p>
-              <p>Com esse embasamento, o grupo dividiu responsabilidades, criou os wireframes, codificou cada página e entregou a primeira versão em março de 2026.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="dg-dados-features">
-        <div className="dg-dados-features-header"><h2 className="dg-dados-features-heading">Um projeto com propósito.</h2><p className="dg-dados-features-sub">Cada decisão do DropGames foi baseada em dados reais sobre como o jogador brasileiro compra, economiza e joga.</p></div>
-        <div className="dg-dados-features-list">
-          {featureRows.map((row) => (
-            <div className="dg-dados-feature-row" key={row.title}>
-              <div className="dg-dados-feature-inner">
-                {!row.reverse && <FeatureText row={row} />}
-                {row.wrapped ? <div className="dg-dados-feature-img-wrap"><img src={`/img/${row.image}`} alt="" /></div> : <img src={`/img/${row.image}`} alt="" className="dg-dados-feature-img" />}
-                {row.reverse && <FeatureText row={row} />}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-      <section className="dg-dados-cta">
-        <div className="dg-dados-cta-inner">
-          <div className="dg-dados-cta-text"><h2 className="dg-dados-cta-heading">Seu próximo jogo pode estar em promoção agora.</h2><p className="dg-dados-cta-sub">Cadastre seu e-mail e seja o primeiro a saber quando o preço cair.</p></div>
-          <div className="dg-dados-cta-form"><div className="dg-dados-input-wrap"><input type="email" className="dg-dados-input" placeholder="Enter your email" /><p className="dg-dados-input-hint">Seus dados estão seguros. Consulte nossa política de privacidade</p></div><button className="dg-btn dg-btn-primary dg-btn-lg">Receber alertas</button></div>
-        </div>
+        </section>
+
+        <GrowthModel />
+
+        <section className="dg-admin-grid">
+          <article className="dg-admin-panel dg-admin-health"><p className="dg-admin-eyebrow">Operação</p><h2>Tudo funcionando como deveria.</h2><div><span><i className="ok" />Autenticação</span><b>Operacional</b></div><div><span><i className="ok" />Catálogo e ofertas</span><b>Operacional</b></div><div><span><i className="ok" />Recomendações</span><b>Operacional</b></div></article>
+          <article className="dg-admin-panel dg-admin-team"><p className="dg-admin-eyebrow">Acesso</p><h2>Um espaço de quem cuida do produto.</h2><p>{metrics.adminUsers} administradores podem consultar esta visão. {metrics.sessionsExpiringSoon ? `${metrics.sessionsExpiringSoon} sessão expira em breve.` : 'Nenhuma sessão expira nos próximos minutos.'}</p><small>Os indicadores sem a marca “mock” vêm do servidor local em tempo real.</small></article>
+        </section>
       </section>
     </PageShell>
   );

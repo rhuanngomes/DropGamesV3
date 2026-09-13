@@ -11,6 +11,7 @@ export {
   deleteEmailAccount,
   exportAccountData,
   getEmailSession,
+  getAdminMetrics,
   loginWithEmail,
   logoutEmailSession,
   requestPasswordRecovery,

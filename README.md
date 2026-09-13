@@ -10,7 +10,7 @@ O projeto nasceu como parte do Happy Game e foi evoluindo por fases. Nesta vers�
 - Cards de jogos e promoções
 - Página de detalhe do jogo com comparativo de lojas, reviews de usuários e requisitos de sistema
 - Página Sobre nós
-- Página de Dados e pesquisa
+- Página de Dados e pesquisa com simulador exponencial de usuários
 - Página de Suporte
 - Tela de confirmação de contato enviado
 - Login e cadastro
@@ -19,6 +19,20 @@ O projeto nasceu como parte do Happy Game e foi evoluindo por fases. Nesta vers�
 - Integração real com a CheapShark API para ofertas, lojas e preços de jogos de PC
 - Integração com endpoints públicos da Steam para reviews textuais e requisitos quando o jogo possui Steam AppID
 - Validações de formulário centralizadas em funções React
+
+## Parte 3: Modelagem Exponencial
+
+Acesse **Dados** (`/dados`) para simular a evolução da comunidade do DropGames. Informe a base inicial de usuários, a variação mensal (%) e o período em meses. O resultado é atualizado automaticamente, com total estimado, variação acumulada, gráfico e tabela mensal expansível.
+
+O modelo usa **U(t) = U₀ × (1 + r/100)^t**: U₀ é a base inicial, r é a variação mensal em porcentagem e t é o número de meses. A taxa é composta e incide sobre a base do mês anterior. Exemplo: **1.000 usuários, crescendo 5% ao mês, resultam em aproximadamente 1.796 usuários após 12 meses**. Taxa zero mantém a base e taxa negativa simula queda.
+
+O objetivo é apoiar a discussão de crescimento da comunidade e demanda da plataforma. Os valores são hipotéticos e não consultam cadastros reais. A taxa constante não considera sazonalidade ou saturação do mercado; o resultado não representa uma previsão garantida.
+
+- Implementação: componente local em `src/pages/DataPage.jsx` e função pura em `src/utils/userProjection.js`, sem novas bibliotecas.
+- Validação: base inteira de 1 a 1.000.000, taxa finita de -50% a 50% e período inteiro de 1 a 36 meses. Campos vazios ou inválidos ocultam os resultados e mostram mensagens associadas aos campos.
+- Segurança e custo: cálculo local, sem requisições, persistência, dados pessoais ou avaliação de código digitado. Tempo e memória O(meses), limitados a 37 pontos incluindo o mês zero.
+- Precisão: arredondamento dos totais de usuários apenas para exibição, nunca entre meses.
+- Testes: execute `npm test` para verificar crescimento composto, estabilidade, queda, taxas fracionárias, precisão e entradas inválidas ou extremas. Execute `npm run build` para validar a compilação.
 
 ## Tecnologias Usadas
 
@@ -131,6 +145,8 @@ Rode o projeto:
 ```bash
 npm run dev
 ```
+
+Abra no navegador o endereço informado pelo Vite e acesse `/dados` para o simulador. Não use Live Server nem abra `index.html` diretamente: o código React precisa ser processado pelo Vite.
 
 Gere a versão de produção:
 

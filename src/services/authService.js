@@ -20,6 +20,10 @@ export async function getEmailSession() {
   return authRequest('/api/auth/session');
 }
 
+export async function getAdminMetrics() {
+  return authRequest('/api/auth/admin/metrics');
+}
+
 export async function requestPasswordRecovery(email) {
   return authRequest('/api/auth/recover', {
     method: 'POST',

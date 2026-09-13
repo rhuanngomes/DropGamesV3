@@ -12,6 +12,12 @@ const LOCKOUT_MS = 10 * 60 * 1000;
 const MAX_LOGIN_ATTEMPTS = 5;
 const AI_RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000;
 const AI_RATE_LIMIT_MAX = 12;
+const ADMIN_EMAILS = new Set([
+  'rhuann1998@gmail.com',
+  'valentino@dropgames.com.br',
+  'gabriela@dropgames.com.br',
+  'leonardo@dropgames.com.br',
+]);
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -63,6 +69,7 @@ export default defineConfig(({ mode }) => {
 });
 
 function dropGamesAuthApiPlugin(env) {
+  seedDemoAdministrators();
   return {
     name: 'dropgames-auth-api',
     configureServer(server) {
@@ -105,6 +112,29 @@ function dropGamesAuthApiPlugin(env) {
 
             const user = authUsers.get(session.email);
             sendJson(res, 200, { user: publicUser(user), session: publicSession(session) });
+            return;
+          }
+
+          if (req.method === 'GET' && route === '/admin/metrics') {
+            const session = getRequestSession(req);
+            const user = session ? authUsers.get(session.email) : null;
+            if (!session || user?.role !== 'admin') {
+              sendJson(res, 403, { error: 'Esta area esta disponivel apenas para administradores.' });
+              return;
+            }
+
+            const now = Date.now();
+            const activeSessions = [...authSessions.values()].filter((item) => item.expiresAt > now);
+            const totalUsageMs = activeSessions.reduce((total, item) => total + Math.max(0, now - item.createdAt), 0);
+            sendJson(res, 200, {
+              measuredAt: new Date().toISOString(),
+              activeUsers: activeSessions.length,
+              registeredUsers: authUsers.size,
+              averageDailyMinutes: activeSessions.length ? Math.max(1, Math.round(totalUsageMs / activeSessions.length / 60000)) : 0,
+              newUsersToday: [...authUsers.values()].filter((item) => new Date(item.createdAt).toDateString() === new Date().toDateString()).length,
+              adminUsers: [...authUsers.values()].filter((item) => item.role === 'admin').length,
+              sessionsExpiringSoon: activeSessions.filter((item) => item.expiresAt - now < 5 * 60 * 1000).length,
+            });
             return;
           }
 
@@ -256,6 +286,7 @@ function createEmailUser(body) {
     createdAt: new Date().toISOString(),
     privacyConsentAt: new Date().toISOString(),
     retentionPolicy: 'Sessao expira em 30 minutos. Dados pessoais devem ser minimizados e apagaveis pelo usuario.',
+    role: ADMIN_EMAILS.has(email) ? 'admin' : 'user',
   };
 
   authUsers.set(email, user);
@@ -361,7 +392,30 @@ function publicUser(user) {
     createdAt: user.createdAt,
     privacyConsentAt: user.privacyConsentAt,
     retentionPolicy: user.retentionPolicy,
+    role: user.role || 'user',
   };
+}
+
+function seedDemoAdministrators() {
+  if (authUsers.has('rhuann1998@gmail.com')) return;
+  const passwordRecord = hashPassword('Fl@min123');
+  const createdAt = new Date().toISOString();
+  const people = [
+    ['Rhuann Gomes', 'rhuann1998@gmail.com'],
+    ['Valentino', 'valentino@dropgames.com.br'],
+    ['Gabriela', 'gabriela@dropgames.com.br'],
+    ['Leonardo', 'leonardo@dropgames.com.br'],
+  ];
+
+  people.forEach(([name, email], index) => {
+    const credentials = index === 0 ? passwordRecord : hashPassword(randomBytes(24).toString('hex'));
+    authUsers.set(email, {
+      id: randomBytes(10).toString('hex'), name, email, ageGroup: 'adult', youthMode: false,
+      passwordHash: credentials.hash, passwordSalt: credentials.salt, passwordIterations: credentials.iterations,
+      createdAt, privacyConsentAt: createdAt, role: 'admin',
+      retentionPolicy: 'Sessao expira em 30 minutos. Dados pessoais devem ser minimizados e apagaveis pelo usuario.',
+    });
+  });
 }
 
 function publicSession(session) {
