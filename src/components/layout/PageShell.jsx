@@ -1,9 +1,10 @@
+import { useEffect, useRef, useState } from 'react';
+import { getEmailSession, logoutEmailSession } from '../../services/index.js';
 import { SkipLink } from './SkipLink.jsx';
 
 const navItems = [
   { href: '/', label: 'Descobrir', chevron: true },
   { href: '/sobre-nos', label: 'Sobre nós', chevron: true },
-  { href: '/dados', label: 'Dados' },
   { href: '/seguranca', label: 'Segurança' },
   { href: '/suporte', label: 'Suporte' },
 ];
@@ -19,6 +20,24 @@ function GlobeIcon() {
 }
 
 export function Header({ active = '/' }) {
+  const [session, setSession] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    getEmailSession().then(setSession).catch(() => setSession(null));
+    const closeMenu = (event) => {
+      if (!menuRef.current?.contains(event.target)) setMenuOpen(false);
+    };
+    document.addEventListener('pointerdown', closeMenu);
+    return () => document.removeEventListener('pointerdown', closeMenu);
+  }, []);
+
+  async function signOut() {
+    await logoutEmailSession().catch(() => {});
+    window.location.href = '/';
+  }
+
   return (
     <header className="dg-header">
       <div className="dg-header-inner">
@@ -35,15 +54,18 @@ export function Header({ active = '/' }) {
         </nav>
         <div className="dg-header-actions">
           <button className="dg-btn dg-btn-ghost" aria-label="Idioma"><GlobeIcon /></button>
-          <a href="/login" className="dg-btn dg-btn-secondary dg-auth-only">Entrar</a>
-          <a href="/signup" className="dg-btn dg-btn-primary dg-auth-only">Cadastrar</a>
-          <div className="dg-header-notif dg-logged-only">
-            <img src="/img/header-bell.svg" alt="" className="dg-notif-icon" />
-            <span className="dg-notif-badge">2</span>
-          </div>
-          <div className="dg-header-avatar dg-logged-only">
-            <img src="/img/header-avatar.jpg" alt="Perfil" />
-          </div>
+          {!session && <><a href="/login" className="dg-btn dg-btn-secondary">Entrar</a><a href="/signup" className="dg-btn dg-btn-primary">Cadastrar</a></>}
+          {session && <div className="dg-profile-menu" ref={menuRef}>
+            <button className="dg-header-avatar" type="button" aria-label="Abrir menu do perfil" aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}>
+              <img src="/img/header-avatar.jpg" alt="" />
+            </button>
+            {menuOpen && <div className="dg-profile-dropdown">
+              <div className="dg-profile-summary"><strong>{session.user.name}</strong><span>{session.user.email}</span></div>
+              <a href="/perfil-gamer">Meu perfil</a>
+              {session.user.role === 'admin' && <a href="/dados"><span>Visão do produto</span><small>Admin</small></a>}
+              <button type="button" onClick={signOut}>Sair</button>
+            </div>}
+          </div>}
         </div>
       </div>
     </header>
@@ -60,7 +82,6 @@ export function Footer() {
         <nav className="dg-footer-nav">
           <a href="/">Descobrir</a>
           <a href="/sobre-nos">Sobre nós</a>
-          <a href="/dados">Dados</a>
           <a href="/suporte">Suporte</a>
           <a href="#">Help</a>
           <a href="#">Privacy</a>
