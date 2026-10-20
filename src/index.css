@@ -22,6 +22,44 @@
   object-fit: contain;
 }
 
+.dg-hero-api-title {
+  max-width: 620px;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(34px, 4vw, 64px);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.dg-hero-source {
+  display: block;
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dg-hero-epic-price {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.dg-hero-platforms > span {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.dg-hero-card--active {
+  border-color: var(--dg-border);
+  background-color: rgba(255, 255, 255, 0.055);
+}
+
 .dg-hero-card {
   text-align: left;
   color: inherit;
@@ -276,7 +314,7 @@ textarea:focus-visible {
 .dg-section-inner,
 .dg-footer-inner,
 .dg-footer-bottom {
-  max-width: 100dvw;
+  max-width: var(--dg-container);
 }
 
 .dg-section-title,
@@ -1103,7 +1141,8 @@ textarea:focus-visible {
 
 .dg-hero-sidebar {
   display: grid;
-  grid-template-rows: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(var(--dg-hero-card-count, 4), minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
   gap: 16px;
   justify-content: stretch;
 }
@@ -1160,6 +1199,9 @@ textarea:focus-visible {
   overflow: hidden;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .dg-stars-img {
@@ -1189,8 +1231,34 @@ textarea:focus-visible {
 }
 
 .dg-cards-row {
+  display: flex;
   gap: 20px;
   align-items: start;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-inline: contain;
+}
+
+.dg-cards-row::-webkit-scrollbar {
+  display: none;
+}
+
+.dg-cards-row > .dg-game-card {
+  flex: 0 0 calc((100% - 60px) / 4);
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.dg-arrow-btn:disabled {
+  cursor: default;
+  opacity: 0.22;
+}
+
+.dg-arrow-btn:not(:disabled) {
+  cursor: pointer;
 }
 
 .dg-game-card-info {
@@ -1252,25 +1320,65 @@ textarea:focus-visible {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.26), rgba(0, 0, 0, 0.08) 42%, rgba(0, 0, 0, 0.18));
+  background: linear-gradient(90deg, rgba(5, 7, 10, 0.9) 0%, rgba(5, 7, 10, 0.7) 45%, rgba(5, 7, 10, 0.12) 100%);
   pointer-events: none;
 }
 
 .dg-banner-content {
   inset: auto;
-  left: 50%;
+  left: 7%;
   top: 50%;
   right: auto;
   bottom: auto;
-  width: min(360px, calc(100% - 48px));
+  width: min(480px, calc(100% - 48px));
   height: auto;
   margin: 0;
+  align-items: flex-start;
   justify-content: center;
   gap: 24px;
   padding: 0;
   z-index: 1;
-  text-align: center;
-  transform: translate(-50%, -50%);
+  text-align: left;
+  transform: translateY(-50%);
+}
+
+.dg-banner-eyebrow {
+  color: var(--dg-accent);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.dg-banner-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.dg-banner-actions strong {
+  color: #fff;
+  font-size: 15px;
+}
+
+.dg-banner-text {
+  align-items: flex-start;
+}
+
+.dg-banner-title,
+.dg-banner-desc {
+  text-align: left;
+}
+
+.dg-banner-title {
+  font-size: clamp(26px, 4vw, 44px);
+}
+
+.dg-banner-desc {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 .dg-banner-logos {
@@ -1347,6 +1455,10 @@ textarea:focus-visible {
 }
 
 @media (max-width: 1200px) {
+  .dg-cards-row > .dg-game-card {
+    flex-basis: calc((100% - 32px) / 3);
+  }
+
   .dg-hero-inner {
     grid-template-columns: 1fr;
   }
@@ -1401,6 +1513,10 @@ textarea:focus-visible {
     gap: 16px;
   }
 
+  .dg-cards-row > .dg-game-card {
+    flex-basis: calc((100% - 16px) / 2);
+  }
+
   .dg-banner-wrap {
     min-height: 360px;
   }
@@ -1408,7 +1524,8 @@ textarea:focus-visible {
   .dg-banner-content {
     width: calc(100% - 40px);
     gap: 18px;
-    transform: translate(-50%, -50%);
+    left: 20px;
+    transform: translateY(-50%);
   }
 
   .dg-banner-logos {
@@ -1798,6 +1915,175 @@ textarea:focus-visible {
   }
 }
 
+/* Mobile shell and product-page safeguards. Keep last to win over legacy rules. */
+.dg-page-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+  background: var(--dg-bg);
+}
+
+.dg-page-shell > main {
+  min-width: 0;
+  flex: 1 0 auto;
+}
+
+.dg-header .dg-logo-img,
+.dg-footer .dg-logo-img {
+  width: 122px;
+  height: 22px;
+  max-width: none;
+  object-fit: contain;
+  aspect-ratio: 122 / 22;
+}
+
+@media (max-width: 768px) {
+  .dg-header .dg-logo {
+    width: 108px;
+    height: 22px;
+    overflow: visible;
+  }
+
+  .dg-header .dg-logo-img {
+    width: 108px;
+    height: 20px;
+    flex: 0 0 auto;
+  }
+
+  .dg-footer {
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    visibility: visible;
+    padding: 36px 20px 28px;
+    gap: 30px;
+  }
+
+  .dg-footer-inner,
+  .dg-footer-bottom {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .dg-game-detail,
+  .dg-game-product-header,
+  .dg-game-product-grid,
+  .dg-game-main-column,
+  .dg-game-section {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .dg-game-detail {
+    gap: 28px;
+  }
+
+  .dg-game-product-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .dg-game-main-column,
+  .dg-game-buy-panel {
+    grid-column: 1;
+  }
+
+  .dg-game-buy-panel {
+    position: static;
+    top: auto;
+    width: 100%;
+    max-width: none;
+  }
+
+  .dg-game-tabs {
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+  }
+
+  .dg-game-tabs a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    scroll-snap-align: start;
+  }
+
+  .dg-game-media-frame {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+  }
+
+  .dg-game-main-media {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+  }
+
+  .dg-game-gallery-strip {
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .dg-game-snapshot {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dg-game-description {
+    max-width: 100%;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .dg-store-offer-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dg-store-offer-price {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .dg-game-detail-page {
+    padding: 24px 16px 56px;
+  }
+
+  .dg-game-product-header h1 {
+    font-size: clamp(26px, 9vw, 34px);
+    line-height: 1.12;
+  }
+
+  .dg-game-product-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+  }
+
+  .dg-game-gallery-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dg-game-snapshot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dg-footer-nav,
+  .dg-footer-legal {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 /* ============================================================
    GAME DETAIL PAGE - EPIC-LIKE PRODUCT LAYOUT
    ============================================================ */
@@ -1901,18 +2187,27 @@ textarea:focus-visible {
   align-items: center;
 }
 
-.dg-game-gallery-strip img {
+.dg-game-gallery-thumb {
   width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-radius: var(--dg-radius-sm);
-  opacity: 0.62;
+  padding: 0;
+  overflow: hidden;
   border: 1px solid transparent;
+  border-radius: var(--dg-radius-sm);
+  background: #050607;
+  cursor: pointer;
+  opacity: 0.62;
   transition: opacity 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
-.dg-game-gallery-strip img:first-child,
-.dg-game-gallery-strip img:hover {
+.dg-game-gallery-thumb img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.dg-game-gallery-thumb--active,
+.dg-game-gallery-thumb:hover {
   opacity: 1;
   border-color: var(--dg-accent);
 }
@@ -2136,9 +2431,7 @@ textarea:focus-visible {
 
 @media (max-width: 980px) {
   .dg-game-product-grid {
-  /*   grid-template-columns: 1fr; */
-  display: flex;
-  flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .dg-game-buy-panel {
@@ -2285,13 +2578,18 @@ textarea:focus-visible {
   gap: 8px;
 }
 
-.dg-game-gallery-strip img {
+.dg-game-gallery-thumb {
   border-radius: var(--dg-radius);
   opacity: 0.58;
 }
 
-.dg-game-gallery-strip img:hover {
+.dg-game-gallery-thumb:hover {
   transform: translateY(-2px);
+}
+
+.dg-game-gallery-thumb--active {
+  opacity: 1;
+  border-color: var(--dg-accent);
 }
 
 .dg-game-snapshot {
@@ -2964,6 +3262,21 @@ textarea:focus-visible {
   padding: 48px 24px 80px;
 }
 
+.dg-gamer-profile-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--dg-bg);
+}
+
+.dg-gamer-profile-shell > main {
+  flex: 1;
+}
+
+.dg-gamer-profile-page {
+  min-height: 100%;
+}
+
 .dg-auth-callback-card,
 .dg-gamer-profile-empty,
 .dg-gamer-profile-header,
@@ -3175,8 +3488,24 @@ textarea:focus-visible {
 .dg-gamer-list-item img {
   width: 36px;
   height: 36px;
+  flex: 0 0 36px;
   border-radius: var(--dg-radius-sm);
   object-fit: cover;
+}
+
+.dg-gamer-game-fallback {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--dg-border);
+  border-radius: var(--dg-radius-sm);
+  background: linear-gradient(145deg, var(--dg-surface-03), var(--dg-surface-01));
+  color: var(--dg-text-muted);
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .dg-gamer-list-item div {
@@ -3207,6 +3536,86 @@ textarea:focus-visible {
 .dg-gamer-ai-panel {
   max-width: 980px;
   margin: 18px auto 0;
+}
+
+.dg-gamer-recommendations {
+  max-width: 980px;
+  margin: 18px auto 0;
+}
+
+.dg-gamer-recommendations-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 14px;
+}
+
+.dg-gamer-recommendations-heading h2 {
+  margin: 4px 0 0;
+  color: var(--dg-text-base);
+  font-size: 22px;
+}
+
+.dg-gamer-recommendations-heading > span {
+  color: var(--dg-accent);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.dg-gamer-recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dg-gamer-recommendation-card {
+  overflow: hidden;
+  border-radius: var(--dg-radius-lg);
+  background-color: #1b1e23;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.dg-gamer-recommendation-card:hover {
+  transform: translateY(-3px);
+  background-color: #22262d;
+}
+
+.dg-gamer-recommendation-card > img {
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+}
+
+.dg-gamer-recommendation-card > div {
+  padding: 14px;
+}
+
+.dg-gamer-recommendation-card span {
+  color: var(--dg-accent);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.dg-gamer-recommendation-card h3 {
+  margin: 7px 0;
+  color: var(--dg-text-base);
+  font-size: 16px;
+}
+
+.dg-gamer-recommendation-card p {
+  min-height: 58px;
+  margin: 0 0 12px;
+  color: var(--dg-text-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.dg-gamer-recommendation-card strong {
+  color: var(--dg-text-base);
+  font-size: 14px;
 }
 
 .dg-gamer-ai-panel h2 {
@@ -3253,9 +3662,16 @@ textarea:focus-visible {
   .dg-gamer-profile-header,
   .dg-gamer-profile-grid,
   .dg-gamer-ai-grid,
+  .dg-gamer-recommendation-grid,
   .dg-demo-profile-picker > div,
   .dg-demo-profile-picker--compact > div {
     grid-template-columns: 1fr;
+  }
+
+  .dg-gamer-recommendations-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
   }
 
   .dg-gamer-profile-header {
@@ -4287,5 +4703,687 @@ textarea:focus-visible {
 @media (max-width: 520px) {
   .dg-ai-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   MOBILE RESPONSIVENESS — final cross-page safeguards
+   ============================================================ */
+.dg-mobile-menu-button {
+  display: none;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--dg-border);
+  border-radius: 10px;
+  background: var(--dg-surface-01);
+  color: var(--dg-text-base);
+}
+
+.dg-mobile-auth-links {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  html,
+  body,
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  p,
+  a,
+  button,
+  label,
+  span {
+    overflow-wrap: anywhere;
+  }
+
+  .dg-header {
+    height: 64px;
+  }
+
+  .dg-header-inner {
+    position: relative;
+    width: 100%;
+    padding: 0 16px;
+    gap: 10px;
+  }
+
+  .dg-logo-img {
+    width: 108px;
+    height: auto;
+  }
+
+  .dg-nav {
+    display: none;
+    position: absolute;
+    top: calc(100% + 1px);
+    left: 12px;
+    right: 12px;
+    z-index: 210;
+    padding: 8px;
+    border: 1px solid var(--dg-border);
+    border-radius: 14px;
+    background: rgba(21, 23, 26, .98);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
+    backdrop-filter: blur(20px);
+  }
+
+  .dg-nav.dg-nav--open {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dg-mobile-auth-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 6px;
+    padding-top: 8px;
+    border-top: 1px solid var(--dg-border);
+  }
+
+  .dg-mobile-auth-links a {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: var(--dg-surface-btn);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .dg-mobile-auth-links a:last-child {
+    background: var(--dg-accent);
+    color: #071014;
+  }
+
+  .dg-nav-link {
+    min-height: 44px;
+    justify-content: space-between;
+    padding: 0 13px;
+    border-radius: 8px;
+  }
+
+  .dg-mobile-menu-button {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+
+  .dg-header-actions {
+    margin-left: auto;
+    gap: 8px;
+  }
+
+  .dg-language-button {
+    display: none;
+  }
+
+  .dg-header-actions > .dg-btn {
+    height: 38px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  .dg-profile-dropdown {
+    position: fixed;
+    top: 70px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+  }
+
+  .dg-footer-inner,
+  .dg-footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .dg-footer-nav,
+  .dg-footer-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+  }
+
+  .dg-footer-bottom {
+    padding: 24px 0;
+  }
+
+  /* Home */
+  .dg-hero {
+    padding: 24px 16px 40px;
+  }
+
+  .dg-hero-img-wrap,
+  .dg-hero-featured {
+    min-height: 460px;
+    height: auto;
+  }
+
+  .dg-hero-overlay {
+    padding: 22px 18px;
+  }
+
+  .dg-hero-desc {
+    max-width: 100%;
+  }
+
+  .dg-section-inner {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .dg-comparison-controls,
+  .dg-comparison-toolbar {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dg-comparison-controls > *,
+  .dg-comparison-toolbar > * {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .dg-cards-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dg-card-img,
+  .dg-game-card-img {
+    height: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+
+  .dg-list-item,
+  .dg-promo-card,
+  .dg-comparison-card {
+    min-width: 0;
+  }
+
+  /* Game detail */
+  .dg-game-detail-page,
+  .dg-security-page,
+  .dg-gamer-profile-page {
+    width: 100%;
+  }
+
+  .dg-game-detail-page {
+    padding: 28px 16px 60px;
+  }
+
+  .dg-game-media-frame {
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+  }
+
+  .dg-game-main-media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .dg-game-snapshot,
+  .dg-ai-grid,
+  .dg-gamer-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dg-game-buy-panel {
+    width: 100%;
+    max-width: none;
+  }
+
+  .dg-game-tabs {
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+  }
+
+  .dg-store-offer-card,
+  .dg-security-lab,
+  .dg-security-ai-panel,
+  .dg-ai-attack-tests,
+  .dg-offer-security-grid {
+    min-width: 0;
+  }
+
+  /* Gamer profile and security */
+  .dg-gamer-profile-page {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .dg-gamer-profile-empty,
+  .dg-privacy-consent-panel {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .dg-gamer-profile-empty h1 {
+    font-size: clamp(32px, 10vw, 48px);
+    line-height: 1.08;
+  }
+
+  .dg-demo-profile-picker,
+  .dg-consent-list,
+  .dg-steam-login-btn {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .dg-privacy-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dg-privacy-actions button {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .dg-security-form input,
+  .dg-security-ai-panel textarea,
+  .dg-security-ai-panel button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* Authentication, support and success */
+  .dg-login-page,
+  .dg-signup-page {
+    min-height: 100dvh;
+  }
+
+  .dg-login-left {
+    width: 100%;
+    min-height: 100dvh;
+    padding: 28px 18px;
+  }
+
+  .dg-login-form-wrap,
+  .dg-login-form,
+  .dg-signup-form {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .dg-login-right {
+    display: none;
+  }
+
+  .dg-contact-form-col,
+  .dg-contact-form,
+  .dg-success-card,
+  .dg-success-img-panel {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .dg-contact-row {
+    flex-direction: column;
+  }
+
+  .dg-contact-row > * {
+    width: 100%;
+  }
+
+  /* About and admin */
+  .dg-team-grid,
+  .dg-features-grid,
+  .dg-about-cta-form {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .dg-about-input-wrap,
+  .dg-about-input,
+  .dg-about-cta-form .dg-btn {
+    width: 100%;
+  }
+
+  .dg-admin-panel,
+  .dg-admin-gate-card {
+    padding: 24px 20px;
+  }
+
+  .dg-admin-hero h1 {
+    font-size: clamp(38px, 12vw, 56px);
+  }
+
+  .dg-admin-insights article {
+    padding-right: 0;
+  }
+
+  .dg-admin-trend {
+    right: 0;
+  }
+
+  table {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .dg-cards-row > .dg-game-card {
+    flex-basis: 100%;
+  }
+  .dg-header-actions > .dg-btn-primary,
+  .dg-header-actions > .dg-btn-secondary {
+    display: none;
+  }
+
+  .dg-cards-row,
+  .dg-game-snapshot,
+  .dg-ai-grid,
+  .dg-gamer-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .dg-hero-img-wrap,
+  .dg-hero-featured {
+    min-height: 420px;
+  }
+
+  .dg-hero-cta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dg-banner-wrap {
+    min-height: 420px;
+  }
+
+  .dg-banner-content {
+    width: calc(100% - 28px);
+  }
+
+  .dg-game-gallery-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dg-admin-live {
+    white-space: normal;
+  }
+
+  .dg-admin-health > div {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .dg-login-remember-row,
+  .dg-login-signup-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+/* Steam reviews: long profile names and translated review text */
+.dg-game-section#reviews {
+  width: 100%;
+}
+
+.dg-review-grid {
+  display: block;
+  columns: 2;
+  column-gap: 14px;
+}
+
+.dg-review-card {
+  min-width: 0;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0 0 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  break-inside: avoid;
+  page-break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+}
+
+.dg-review-card-header {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+}
+
+.dg-review-author {
+  width: 100%;
+  min-width: 0;
+  align-items: flex-start;
+}
+
+.dg-review-author > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.dg-review-author strong {
+  display: block;
+  max-width: 100%;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.dg-review-author span {
+  line-height: 1.4;
+}
+
+.dg-review-positive,
+.dg-review-negative {
+  width: fit-content;
+  max-width: 100%;
+  margin-left: 0;
+  white-space: nowrap;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.dg-review-card > p {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: initial;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+@media (max-width: 640px) {
+  .dg-review-grid {
+    columns: 1;
+  }
+
+  .dg-review-card {
+    min-height: 0;
+  }
+}
+
+/* Final mobile cascade: overrides legacy product-page declarations above. */
+.dg-page-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+}
+
+.dg-page-shell > main {
+  min-width: 0;
+  flex: 1 0 auto;
+}
+
+.dg-header .dg-logo-img,
+.dg-footer .dg-logo-img {
+  width: 122px;
+  height: 22px;
+  max-width: none;
+  object-fit: contain;
+  aspect-ratio: 122 / 22;
+}
+
+@media (max-width: 768px) {
+  .dg-header .dg-logo {
+    width: 108px;
+    height: 22px;
+  }
+
+  .dg-header .dg-logo-img {
+    width: 108px;
+    height: 20px;
+  }
+
+  .dg-footer {
+    width: 100%;
+    min-height: 0;
+    display: flex;
+    visibility: visible;
+    padding: 36px 20px 28px;
+    gap: 30px;
+  }
+
+  .dg-footer-inner,
+  .dg-footer-bottom {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .dg-game-detail,
+  .dg-game-product-header,
+  .dg-game-product-grid,
+  .dg-game-main-column,
+  .dg-game-section {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .dg-game-detail {
+    gap: 28px;
+  }
+
+  .dg-game-product-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .dg-game-main-column,
+  .dg-game-buy-panel {
+    grid-column: 1;
+  }
+
+  .dg-game-buy-panel {
+    position: static;
+    top: auto;
+    width: 100%;
+    max-width: none;
+  }
+
+  .dg-game-tabs {
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .dg-game-tabs a {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    overflow-wrap: normal;
+  }
+
+  .dg-game-media-frame {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+  }
+
+  .dg-game-main-media {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+  }
+
+  .dg-game-gallery-strip {
+    width: 100%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .dg-game-snapshot {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dg-game-description {
+    max-width: 100%;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .dg-store-offer-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dg-store-offer-price {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .dg-game-detail-page {
+    padding: 24px 16px 56px;
+  }
+
+  .dg-game-product-header h1 {
+    font-size: clamp(26px, 9vw, 34px);
+    line-height: 1.12;
+  }
+
+  .dg-game-product-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+  }
+
+  .dg-game-gallery-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dg-game-snapshot {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dg-footer-nav,
+  .dg-footer-legal {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

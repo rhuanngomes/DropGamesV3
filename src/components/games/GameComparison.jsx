@@ -15,6 +15,8 @@ export default function GameComparison({ games, status, error, updatedAt, source
   const [catalogGames, setCatalogGames] = useState([]);
   const [catalogStatus, setCatalogStatus] = useState('idle');
   const [catalogError, setCatalogError] = useState('');
+  const [catalogQuery, setCatalogQuery] = useState('');
+  const [catalogCurrency, setCatalogCurrency] = useState('USD');
 
   const normalizedSearch = search.trim().toLowerCase();
   const isCatalogSearch = normalizedSearch.length >= 2;
@@ -26,6 +28,7 @@ export default function GameComparison({ games, status, error, updatedAt, source
       setCatalogGames([]);
       setCatalogStatus('idle');
       setCatalogError('');
+      setCatalogQuery('');
       return undefined;
     }
 
@@ -37,6 +40,8 @@ export default function GameComparison({ games, status, error, updatedAt, source
         const payload = await searchGamesByTitle(search);
         if (!cancelled) {
           setCatalogGames(payload.games);
+          setCatalogQuery(payload.resolvedQuery || search.trim());
+          setCatalogCurrency(payload.currency || 'USD');
           setCatalogStatus('success');
         }
       } catch (requestError) {
@@ -77,6 +82,7 @@ export default function GameComparison({ games, status, error, updatedAt, source
 
   const visibleStatus = isCatalogSearch ? catalogStatus : status;
   const visibleError = isCatalogSearch ? catalogError : error;
+  const visibleCurrency = isCatalogSearch ? catalogCurrency : currency;
   const statusText = isCatalogSearch
     ? `${catalogGames.length} resultados encontrados`
     : `${games.length} jogos carregados`;
@@ -97,6 +103,7 @@ export default function GameComparison({ games, status, error, updatedAt, source
             {visibleStatus === 'error' && visibleError}
             {visibleStatus === 'success' && statusText}
             <span>{isCatalogSearch ? 'CheapShark catalog search' : source}</span>
+            {isCatalogSearch && catalogQuery && catalogQuery.toLowerCase() !== search.trim().toLowerCase() && <span>Busca interpretada como “{catalogQuery}”</span>}
             {updatedAt && <span>Atualizado em {new Date(updatedAt).toLocaleString('pt-BR')}</span>}
           </div>
         </div>
@@ -108,7 +115,7 @@ export default function GameComparison({ games, status, error, updatedAt, source
               className="dg-field dg-field-search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Buscar qualquer jogo por nome, ex: Celeste, Doom, Zelda"
+              placeholder="Buscar por nome ou sigla, ex: GTA, COD, CS2"
             />
           </label>
           <label className="block">
@@ -133,7 +140,7 @@ export default function GameComparison({ games, status, error, updatedAt, source
 
         {visibleStatus === 'success' && (
           <div className="dg-comparison-grid">
-            {filteredGames.map((game) => <ComparisonCard game={game} currency={currency} key={game.id || game.steamAppID || game.title} />)}
+            {filteredGames.map((game) => <ComparisonCard game={game} currency={visibleCurrency} key={game.id || game.steamAppID || game.title} />)}
           </div>
         )}
 

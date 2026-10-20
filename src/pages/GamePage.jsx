@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PageShell } from '../components/layout/index.js';
 import { useGameDetails } from '../hooks/index.js';
 import { analyzeGamePurchase, analyzeOfferSecurity, answerGameQuestion, formatPrice, generateGameAiResponse, getBestOffer, getGameYouthSafety } from '../services/index.js';
@@ -30,7 +30,8 @@ function GameDetail({ game, meta }) {
   const prices = [...game.prices].sort((a, b) => a.price - b.price);
   const heroImage = game.heroImage?.startsWith('http') ? game.heroImage : game.image;
   const coverImage = game.image?.startsWith('http') ? game.image : `/img/${game.image}`;
-  const gallery = [heroImage, coverImage, ...(game.screenshots || [])].filter(Boolean).slice(0, 6);
+  const gallery = [...new Set([heroImage, coverImage, ...(game.screenshots || [])].filter(Boolean))].slice(0, 6);
+  const [activeMedia, setActiveMedia] = useState(gallery[0]);
   const stores = getUniqueStores(prices);
   const totalStores = stores.length;
   const maxDiscount = Math.max(...prices.map((price) => price.discount || 0), 0);
@@ -43,6 +44,10 @@ function GameDetail({ game, meta }) {
     rating: analyzeOfferSecurity(offer, { bestOffer, game }),
   }));
   const bestSecurityRating = analyzeOfferSecurity(bestOffer, { bestOffer, game });
+
+  useEffect(() => {
+    setActiveMedia(gallery[0]);
+  }, [game.id, game.title]);
 
   async function handleGenerativeSubmit(event) {
     event.preventDefault();
@@ -91,11 +96,20 @@ function GameDetail({ game, meta }) {
       <div className="dg-game-product-grid" id="overview">
         <div className="dg-game-main-column">
           <div className="dg-game-media-frame">
-            <img src={heroImage || coverImage} alt={game.title} className="dg-game-main-media" />
+            <img key={activeMedia} src={activeMedia} alt={`${game.title} — imagem selecionada`} className="dg-game-main-media" />
           </div>
           <div className="dg-game-gallery-strip" aria-label="Galeria do jogo">
             {gallery.map((image, index) => (
-              <img src={image} alt="" key={`${image}-${index}`} />
+              <button
+                type="button"
+                className={`dg-game-gallery-thumb ${activeMedia === image ? 'dg-game-gallery-thumb--active' : ''}`}
+                onClick={() => setActiveMedia(image)}
+                aria-label={`Exibir imagem ${index + 1} de ${game.title}`}
+                aria-pressed={activeMedia === image}
+                key={`${image}-${index}`}
+              >
+                <img src={image} alt="" />
+              </button>
             ))}
           </div>
 

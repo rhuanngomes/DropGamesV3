@@ -1,4 +1,5 @@
 export { fetchGameDetails, fetchGames, formatPrice, getBestOffer, searchGamesByTitle } from './gameService.js';
+export { fetchEpicFeaturedGames } from './epicService.js';
 export {
   analyzeGamePurchase,
   answerGameQuestion,
@@ -6,6 +7,7 @@ export {
   generateGamerAiInsights,
   generateSecurityAiResponse,
   getGameYouthSafety,
+  recommendGamesForGamer,
 } from './aiService.js';
 export {
   deleteEmailAccount,
