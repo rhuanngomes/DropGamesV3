@@ -1,6 +1,19 @@
 import { useEffect, useState } from 'react';
 import { finishSteamLogin } from '../services/index.js';
 
+let pendingSteamVerification = null;
+
+function verifySteamCallbackOnce(searchParams) {
+  if (!pendingSteamVerification || pendingSteamVerification.searchParams !== searchParams) {
+    pendingSteamVerification = {
+      searchParams,
+      promise: finishSteamLogin(searchParams),
+    };
+  }
+
+  return pendingSteamVerification.promise;
+}
+
 export default function SteamCallbackPage() {
   const [status, setStatus] = useState('Verificando login com a Steam...');
 
@@ -9,7 +22,7 @@ export default function SteamCallbackPage() {
 
     async function verifyLogin() {
       try {
-        await finishSteamLogin(window.location.search);
+        await verifySteamCallbackOnce(window.location.search);
         if (!cancelled) {
           setStatus('Login Steam confirmado. Redirecionando...');
           window.location.replace('/perfil-gamer');

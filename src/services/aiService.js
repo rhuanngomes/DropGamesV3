@@ -2,9 +2,9 @@ import { formatPrice, getBestOffer } from './gameService.js';
 
 const MARKET_TAGS = {
   rpg: ['rpg', 'role-playing', 'mundo aberto', 'open world', 'aventura', 'adventure', 'skyrim', 'elden', 'witcher'],
-  competitive: ['competitive', 'competitivo', 'multiplayer', 'online', 'pvp', 'fps', 'battle royale', 'counter-strike', 'dota', 'apex'],
+  competitive: ['competitive', 'competitivo', 'multiplayer', 'online', 'pvp', 'fps', 'battle royale', 'counter-strike', 'rainbow six', 'call of duty', 'battlefield', 'valorant', 'overwatch', 'dota', 'apex'],
   horror: ['horror', 'terror', 'survival', 'resident evil', 'zombie'],
-  action: ['action', 'acao', 'aventura', 'shooter', 'souls', 'nioh'],
+  action: ['action', 'acao', 'aventura', 'shooter', 'souls', 'nioh', 'grand theft auto', 'gta', 'watch dogs'],
   indie: ['indie', 'roguelike', 'pixel', 'platformer', 'celeste', 'hollow knight', 'hades'],
   racing: ['racing', 'corrida', 'ride', 'motogp', 'forza'],
 };
@@ -116,6 +116,40 @@ export function generateGamerAiInsights(profile, demoProfile) {
       },
     ],
   };
+}
+
+export function recommendGamesForGamer(catalog = [], profile = {}, limit = 6) {
+  if (!Array.isArray(catalog) || !catalog.length) return [];
+
+  const ownedGames = profile.ownedGames || [];
+  const playedGames = [...ownedGames, ...(profile.topGames || []), ...(profile.recentlyPlayed || [])];
+  const ownedIds = new Set(playedGames.map((game) => String(game.appid || game.steamAppID || '')));
+  const ownedTitles = new Set(playedGames.map((game) => normalizeTitle(game.name || game.title)));
+  const tasteText = normalizeText(playedGames.map((game) => game.name || game.title).join(' '));
+  const segments = detectSegments(tasteText);
+  const primarySegment = segments[0] || 'Explorador PC';
+  const segmentKeywords = getSegmentKeywords(segments);
+
+  return catalog
+    .filter((game) => {
+      const appId = String(game.steamAppID || game.appid || '');
+      return !ownedIds.has(appId) && !ownedTitles.has(normalizeTitle(game.title));
+    })
+    .map((game, index) => {
+      const gameText = normalizeText([game.title, game.genre, ...(game.tags || []), game.description].join(' '));
+      const keywordMatches = segmentKeywords.filter((keyword) => gameText.includes(keyword));
+      const segmentScore = Math.min(keywordMatches.length * 16, 48);
+      const qualityScore = Math.min(Number(game.steamRatingPercent || game.score || 0) * 0.22, 22);
+      const popularityScore = Math.max(0, 18 - Number(game.popularityRank ?? index) * 0.5);
+      const score = clamp(34 + segmentScore + qualityScore + popularityScore, 35, 98);
+      const reason = keywordMatches.length
+        ? `Combina com seu interesse em ${primarySegment.toLowerCase()} e com padrões da sua biblioteca.`
+        : `Amplia seu perfil de ${primarySegment.toLowerCase()} com um título relevante no catálogo.`;
+
+      return { ...game, recommendationScore: score, recommendationReason: reason };
+    })
+    .sort((a, b) => b.recommendationScore - a.recommendationScore)
+    .slice(0, limit);
 }
 
 export function answerGameQuestion(questionId, insights, game) {
@@ -335,6 +369,25 @@ function buildShelfStrategy(segment, totalHours, playedRatio) {
   if (segment.includes('Indie')) return 'Priorizar custo-beneficio, curadoria e jogos com alta taxa de conclusao/comunidade.';
   if (totalHours > 500 || playedRatio > 70) return 'Mostrar recomendacoes mais especificas, pois o usuario tem historico suficiente para match fino.';
   return 'Comecar com recomendacoes amplas e coletar feedback explicito para melhorar o perfil.';
+}
+
+function getSegmentKeywords(segments) {
+  const keywords = [];
+  const segmentMap = {
+    'RPG e campanha longa': MARKET_TAGS.rpg,
+    'Competitivo online': MARKET_TAGS.competitive,
+    'Terror e survival': MARKET_TAGS.horror,
+    'Acao e desafio': MARKET_TAGS.action,
+    'Indie de alto engajamento': MARKET_TAGS.indie,
+    'Corrida e simulacao': MARKET_TAGS.racing,
+  };
+
+  segments.forEach((segment) => keywords.push(...(segmentMap[segment] || [])));
+  return [...new Set(keywords)];
+}
+
+function normalizeTitle(value = '') {
+  return normalizeText(value).replace(/[^a-z0-9]/g, '');
 }
 
 function getRetentionRisk(totalHours, playedRatio, recentCount) {

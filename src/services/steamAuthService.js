@@ -103,6 +103,8 @@ export async function finishSteamLogin(searchParams) {
   };
 
   localStorage.setItem(STEAM_SESSION_KEY, JSON.stringify(session));
+  // A real Steam login must take precedence over a previously selected demo profile.
+  localStorage.removeItem(MOCK_PROFILE_KEY);
   return session;
 }
 
@@ -226,6 +228,7 @@ export function buildGamerProfile(library = [], recentlyPlayed = []) {
     totalGames: library.length,
     playedGames: playedGames.length,
     totalHours: Math.round(totalMinutes / 60),
+    ownedGames: library.map((game) => ({ appid: game.appid, name: game.name })),
     topGames: sortedByPlaytime.slice(0, 6),
     recentlyPlayed,
     engagementLabel: getEngagementLabel(totalMinutes, playedGames.length),
@@ -258,6 +261,7 @@ function createMockGame(appid, name, hours, imgIconUrl = '') {
     appid,
     name,
     img_icon_url: imgIconUrl,
+    isMock: true,
     playtime_forever: hours * 60,
   };
 }

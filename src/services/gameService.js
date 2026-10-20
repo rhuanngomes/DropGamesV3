@@ -1,3 +1,5 @@
+import { expandGameSearchQuery } from '../utils/gameSearch.js';
+
 const CHEAPSHARK_API_URL = '/cheapshark/api/1.0';
 const CHEAPSHARK_REDIRECT_URL = 'https://www.cheapshark.com/redirect';
 const STEAM_STORE_URL = '/steam';
@@ -5,14 +7,17 @@ const STEAM_STORE_URL = '/steam';
 export async function fetchGames() {
   try {
     const steamFeatured = await fetchSteamFeaturedCategories();
-    const steamTopSellers = normalizeSteamCategory(steamFeatured?.top_sellers?.items || [], { limit: 36 });
+    const steamTopSellers = normalizeSteamCategory(steamFeatured?.top_sellers?.items || [], { limit: 36, category: 'top-seller' });
+    const steamNewReleases = normalizeSteamCategory(steamFeatured?.new_releases?.items || [], { limit: 24, category: 'new-release' });
+    const steamComingSoon = normalizeSteamCategory(steamFeatured?.coming_soon?.items || [], { limit: 24, category: 'coming-soon' });
+    const steamCatalog = mergeSteamCategories([...steamTopSellers, ...steamNewReleases, ...steamComingSoon]);
 
-    if (steamTopSellers.length) {
+    if (steamCatalog.length) {
       return {
         source: 'Steam Store - mais vendidos',
         updatedAt: new Date().toISOString(),
         currency: 'BRL',
-        games: steamTopSellers,
+        games: steamCatalog,
       };
     }
 
@@ -64,7 +69,7 @@ export async function fetchGameDetails({ gameID, title } = {}) {
 }
 
 export async function searchGamesByTitle(title) {
-  const cleanedTitle = title?.replace(/[™®]/g, '').trim();
+  const cleanedTitle = expandGameSearchQuery(title);
   if (!cleanedTitle || cleanedTitle.length < 2) {
     return {
       source: 'CheapShark API',
@@ -103,6 +108,7 @@ export async function searchGamesByTitle(title) {
     source: 'CheapShark catalog search',
     updatedAt: new Date().toISOString(),
     currency: 'USD',
+    resolvedQuery: cleanedTitle,
     games,
   };
 }
@@ -327,8 +333,9 @@ function normalizeSteamCategory(items, options = {}) {
         title: item.name,
         image: item.large_capsule_image || item.header_image || item.small_capsule_image,
         heroImage: item.large_capsule_image || item.header_image || item.small_capsule_image,
-        genre: 'Mais vendido',
-        tags: ['Steam Store', 'Mais vendido'],
+        genre: options.category === 'coming-soon' ? 'Em breve' : options.category === 'new-release' ? 'Novo lançamento' : 'Mais vendido',
+        tags: ['Steam Store', options.category || 'top-seller'],
+        merchandisingCategories: [options.category || 'top-seller'],
         score: Number(item.review_score || 0),
         steamRatingPercent: Number(item.review_score || 0),
         steamRatingText: item.review_desc || 'Steam Store',
@@ -352,6 +359,27 @@ function normalizeSteamCategory(items, options = {}) {
       };
     })
     .slice(0, options.limit || 24);
+}
+
+function mergeSteamCategories(games) {
+  const merged = new Map();
+
+  games.forEach((game) => {
+    const key = String(game.steamAppID || game.title).toLowerCase();
+    const current = merged.get(key);
+    if (!current) {
+      merged.set(key, game);
+      return;
+    }
+
+    current.merchandisingCategories = [...new Set([
+      ...(current.merchandisingCategories || []),
+      ...(game.merchandisingCategories || []),
+    ])];
+    current.tags = [...new Set([...(current.tags || []), ...(game.tags || [])])];
+  });
+
+  return [...merged.values()];
 }
 
 function normalizeCheapSharkGameLookup(gameID, payload, stores) {

@@ -7,6 +7,7 @@ const authSessions = new Map();
 const loginAttempts = new Map();
 const aiUsageLog = new Map();
 const aiAbuseLog = [];
+let epicFeaturedCache = null;
 const SESSION_TTL_MS = 30 * 60 * 1000;
 const LOCKOUT_MS = 10 * 60 * 1000;
 const MAX_LOGIN_ATTEMPTS = 5;
@@ -24,7 +25,7 @@ export default defineConfig(({ mode }) => {
   const steamApiKey = env.STEAM_WEB_API_KEY || '';
 
   return {
-    plugins: [react(), dropGamesAuthApiPlugin(env), dropGamesAiApiPlugin(env)],
+    plugins: [react(), dropGamesAuthApiPlugin(env), dropGamesAiApiPlugin(env), dropGamesEpicApiPlugin()],
     server: {
       proxy: {
         '/cheapshark': {
@@ -67,6 +68,209 @@ export default defineConfig(({ mode }) => {
     },
   };
 });
+
+function dropGamesEpicApiPlugin() {
+  return {
+    name: 'dropgames-epic-featured-api',
+    configureServer(server) {
+      server.middlewares.use('/api/epic/featured', async (req, res, next) => {
+        if (req.method !== 'GET') {
+          next();
+          return;
+        }
+
+        try {
+          const payload = await getEpicFeaturedGames();
+          res.setHeader('Cache-Control', 'public, max-age=300, stale-while-revalidate=3600');
+          sendJson(res, 200, payload);
+        } catch (error) {
+          sendJson(res, 502, { error: error.message || 'A Epic Games Store esta temporariamente indisponivel.' });
+        }
+      });
+    },
+  };
+}
+
+async function getEpicFeaturedGames() {
+  if (epicFeaturedCache?.expiresAt > Date.now()) return epicFeaturedCache.payload;
+
+  const editorialUrl = 'https://store-content.ak.epicgames.com/api/pt-BR/content/store';
+  const promotionsUrl = 'https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=pt-BR&country=BR&allowCountries=BR';
+  let items = [];
+  let source = '';
+
+  try {
+    const editorial = await fetchEpicJson(editorialUrl);
+    items = normalizeEpicEditorial(editorial);
+    if (items.length) source = 'Epic Games Store - carrossel editorial';
+  } catch {
+    // The editorial CMS may return references instead of expanded slides.
+  }
+
+  if (!items.length) {
+    const promotions = await fetchEpicJson(promotionsUrl);
+    items = normalizeEpicPromotions(promotions);
+    items = await Promise.all(items.slice(0, 4).map(enrichEpicFeaturedItem));
+    source = 'Epic Games Store - ofertas em destaque';
+  }
+
+  if (!items.length) throw new Error('A Epic nao retornou destaques validos agora.');
+
+  const payload = {
+    source,
+    updatedAt: new Date().toISOString(),
+    items: items.slice(0, 4),
+  };
+  epicFeaturedCache = { payload, expiresAt: Date.now() + 30 * 60 * 1000 };
+  return payload;
+}
+
+async function fetchEpicJson(url) {
+  const response = await fetch(url, {
+    headers: {
+      Accept: 'application/json',
+      'User-Agent': 'DropGames/1.0 (FIAP academic project)',
+    },
+    signal: AbortSignal.timeout(10000),
+  });
+
+  if (!response.ok) throw new Error(`Epic respondeu com status ${response.status}.`);
+  return response.json();
+}
+
+function normalizeEpicEditorial(payload) {
+  const carousel = findEpicCarousel(payload);
+  return (carousel?.slides || []).map((slide, index) => ({
+    id: `epic-editorial-${index}-${slugify(slide.title)}`,
+    title: String(slide.title || 'Destaque Epic Games'),
+    eyebrow: String(slide.eyebrow || 'Em destaque na Epic'),
+    description: String(slide.description || ''),
+    image: safeEpicMediaUrl(slide.image?.src),
+    mobileImage: safeEpicMediaUrl(slide.mobileImage?.src || slide.image?.src),
+    video: safeEpicMediaUrl(extractEpicVideo(slide.videoRecipe)),
+    url: makeEpicStoreUrl(slide.link?.src),
+    cta: String(slide.link?.linkText || 'Ver na Epic Games'),
+    price: '',
+  })).filter((item) => item.title && item.image && item.url);
+}
+
+function findEpicCarousel(value) {
+  if (!value || typeof value !== 'object') return null;
+  if (Array.isArray(value.slides) && value.slides.length) return value;
+  for (const child of Object.values(value)) {
+    const match = findEpicCarousel(child);
+    if (match) return match;
+  }
+  return null;
+}
+
+function normalizeEpicPromotions(payload) {
+  const elements = payload?.data?.Catalog?.searchStore?.elements || [];
+  return elements.map((offer) => {
+    const image = pickEpicImage(offer.keyImages, ['DieselStoreFrontWide', 'OfferImageWide', 'Featured', 'Thumbnail']);
+    const mobileImage = pickEpicImage(offer.keyImages, ['DieselStoreFrontTall', 'OfferImageTall', 'Thumbnail']) || image;
+    const slug = offer.catalogNs?.mappings?.[0]?.pageSlug || offer.offerMappings?.[0]?.pageSlug || offer.productSlug || offer.urlSlug;
+    const price = offer.price?.totalPrice?.fmtPrice?.discountPrice || offer.price?.totalPrice?.fmtPrice?.originalPrice || '';
+
+    return {
+      id: offer.id || `${offer.namespace}-${slug}`,
+      title: String(offer.title || ''),
+      eyebrow: hasActiveEpicPromotion(offer) ? 'Oferta em destaque' : 'Destaque Epic Games',
+      description: String(offer.description || 'Disponivel agora na Epic Games Store.'),
+      image,
+      mobileImage,
+      video: '',
+      url: makeEpicStoreUrl(slug ? `/p/${String(slug).replace(/\/home$/, '')}` : '/'),
+      cta: 'Ver na Epic Games',
+      price,
+    };
+  }).filter((item) => item.title && item.image && item.url);
+}
+
+async function enrichEpicFeaturedItem(item) {
+  try {
+    const slug = new URL(item.url).pathname.split('/p/')[1]?.split('/')[0];
+    if (!slug) return item;
+    const product = await fetchEpicJson(`https://store-content.ak.epicgames.com/api/pt-BR/content/products/${encodeURIComponent(slug)}`);
+    const videoData = findEpicVideoData(product);
+    return {
+      ...item,
+      video: safeEpicMediaUrl(videoData.video) || item.video,
+      videoType: videoData.type,
+      image: safeEpicMediaUrl(videoData.poster) || item.image,
+    };
+  } catch {
+    return item;
+  }
+}
+
+function findEpicVideoData(value) {
+  if (!value || typeof value !== 'object') return { video: '', poster: '', type: '' };
+
+  if (typeof value.recipes === 'string') {
+    try {
+      const recipes = JSON.parse(value.recipes);
+      const variants = Object.values(recipes).flat();
+      const hls = variants.find((variant) => variant.recipe === 'video-hls');
+      const manifest = hls?.outputs?.find((output) => output.key === 'manifest');
+      if (manifest?.url) return { video: manifest.url, poster: value.poster || '', type: 'application/x-mpegURL' };
+    } catch {
+      // Continue searching if an old CMS recipe is malformed.
+    }
+  }
+
+  for (const child of Object.values(value)) {
+    const result = findEpicVideoData(child);
+    if (result.video) return result;
+  }
+  return { video: '', poster: '', type: '' };
+}
+
+function pickEpicImage(images = [], preferredTypes = []) {
+  for (const type of preferredTypes) {
+    const match = images.find((image) => image.type === type && safeEpicMediaUrl(image.url));
+    if (match) return safeEpicMediaUrl(match.url);
+  }
+  return safeEpicMediaUrl(images.find((image) => image.url)?.url);
+}
+
+function hasActiveEpicPromotion(offer) {
+  return Boolean(offer.promotions?.promotionalOffers?.some((promotion) => promotion.promotionalOffers?.length));
+}
+
+function extractEpicVideo(recipe) {
+  if (!recipe) return '';
+  if (typeof recipe === 'string' && /^https?:\/\//.test(recipe)) return recipe;
+  const sources = recipe.sources || recipe.video?.sources || [];
+  return sources.find((source) => /video\/(mp4|webm)/.test(source.type || ''))?.src || '';
+}
+
+function safeEpicMediaUrl(value = '') {
+  try {
+    const url = new URL(value);
+    const allowed = url.protocol === 'https:' && (
+      url.hostname.endsWith('.epicgames.com')
+      || url.hostname.endsWith('.unrealengine.com')
+      || url.hostname.endsWith('.akamaized.net')
+    );
+    return allowed ? url.toString() : '';
+  } catch {
+    return '';
+  }
+}
+
+function makeEpicStoreUrl(value = '/') {
+  try {
+    const url = new URL(value, 'https://store.epicgames.com/pt-BR/');
+    return url.protocol === 'https:' && url.hostname === 'store.epicgames.com' ? url.toString() : 'https://store.epicgames.com/pt-BR/';
+  } catch {
+    return 'https://store.epicgames.com/pt-BR/';
+  }
+}
+
+function slugify(value = '') {
+  return String(value).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
 
 function dropGamesAuthApiPlugin(env) {
   seedDemoAdministrators();

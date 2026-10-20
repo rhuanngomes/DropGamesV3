@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
+import { PageShell } from '../components/layout/index.js';
+import { useGames } from '../hooks/index.js';
 import {
   buildGamerProfile,
   clearGamerDataConsent,
@@ -9,21 +11,25 @@ import {
   fetchSteamLibrary,
   fetchSteamPlayerProfile,
   fetchSteamRecentlyPlayed,
+  formatPrice,
   generateGamerAiInsights,
   getGamerDataConsent,
   getMockGamerProfile,
   getMockGamerProfiles,
   getMockProfileData,
   getSteamSession,
+  getBestOffer,
   logoutEmailSession,
   saveGamerDataConsent,
   saveMockGamerProfile,
   startSteamLogin,
+  recommendGamesForGamer,
 } from '../services/index.js';
 
 const demoProfiles = getMockGamerProfiles();
 
 export default function GamerProfilePage() {
+  const gamesApi = useGames();
   const [session, setSession] = useState(() => getSteamSession());
   const [mockProfile, setMockProfile] = useState(() => getMockGamerProfile());
   const [status, setStatus] = useState('idle');
@@ -35,6 +41,10 @@ export default function GamerProfilePage() {
   const [recent, setRecent] = useState([]);
   const gamerProfile = useMemo(() => buildGamerProfile(library, recent), [library, recent]);
   const gamerAi = useMemo(() => generateGamerAiInsights(gamerProfile, mockProfile), [gamerProfile, mockProfile]);
+  const recommendations = useMemo(
+    () => recommendGamesForGamer(gamesApi.games, gamerProfile),
+    [gamesApi.games, gamerProfile],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -172,15 +182,15 @@ export default function GamerProfilePage() {
 
   if (!consent?.accepted) {
     return (
-      <main className="dg-gamer-profile-page">
+      <GamerProfileShell>
         <PrivacyConsentGate onAccept={acceptGamerConsent} message={privacyMessage} />
-      </main>
+      </GamerProfileShell>
     );
   }
 
   if (!session && !mockProfile) {
     return (
-      <main className="dg-gamer-profile-page">
+      <GamerProfileShell>
         <section className="dg-gamer-profile-empty">
           <p className="dg-kicker">GamePulse AI</p>
           <h1>Crie seu DNA gamer</h1>
@@ -189,12 +199,12 @@ export default function GamerProfilePage() {
           <DemoProfilePicker profiles={demoProfiles} onSelect={activateDemoProfile} />
           <a href="/" className="dg-gamer-skip">Fazer isso depois e voltar à DropGames</a>
         </section>
-      </main>
+      </GamerProfileShell>
     );
   }
 
   return (
-    <main className="dg-gamer-profile-page">
+    <GamerProfileShell>
       <section className="dg-gamer-profile-header">
         <div>
           <p className="dg-kicker">GamePulse AI</p>
@@ -229,6 +239,8 @@ export default function GamerProfilePage() {
             <GameList title="Recentes" games={gamerProfile.recentlyPlayed} emptyText="Nenhum jogo recente retornado pela Steam." />
           </section>
 
+          <RecommendationShelf games={recommendations} currency={gamesApi.currency} />
+
           <section className="dg-gamer-ai-panel">
             <div className="dg-gamer-ai-header">
               <div>
@@ -254,7 +266,15 @@ export default function GamerProfilePage() {
           <button type="button" onClick={disconnectSteam}>{mockProfile ? 'Apagar perfil demo' : 'Apagar dados e desconectar'}</button>
         </div>
       </section>
-    </main>
+    </GamerProfileShell>
+  );
+}
+
+function GamerProfileShell({ children }) {
+  return (
+    <PageShell bodyClass="dg-gamer-profile-shell min-h-screen">
+      <div className="dg-gamer-profile-page">{children}</div>
+    </PageShell>
   );
 }
 
@@ -333,6 +353,43 @@ function ProfileStat({ label, value }) {
   );
 }
 
+function RecommendationShelf({ games, currency }) {
+  if (!games.length) return null;
+
+  return (
+    <section className="dg-gamer-recommendations">
+      <div className="dg-gamer-recommendations-heading">
+        <div>
+          <p className="dg-kicker">Escolhidos para você</p>
+          <h2>Jogos que combinam com seu DNA gamer</h2>
+        </div>
+        <span>GamePulse AI</span>
+      </div>
+      <div className="dg-gamer-recommendation-grid">
+        {games.map((game) => {
+          const offer = getBestOffer(game);
+          const image = game.image?.startsWith('http') ? game.image : `/img/${game.image}`;
+          const href = game.id
+            ? `/jogo?gameID=${encodeURIComponent(game.id)}`
+            : `/jogo?title=${encodeURIComponent(game.title)}`;
+
+          return (
+            <a className="dg-gamer-recommendation-card" href={href} key={game.steamAppID || game.id || game.title}>
+              <img src={image} alt={game.title} loading="lazy" />
+              <div>
+                <span>{game.recommendationScore}% de match</span>
+                <h3>{game.title}</h3>
+                <p>{game.recommendationReason}</p>
+                <strong>{offer ? formatPrice(offer.price, currency) : 'Ver ofertas'}</strong>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
 function GameList({ title, games, emptyText }) {
   return (
     <section className="dg-gamer-list">
@@ -340,7 +397,7 @@ function GameList({ title, games, emptyText }) {
       {games.length > 0 ? (
         games.map((game) => (
           <article className="dg-gamer-list-item" key={game.appid}>
-            {game.img_icon_url && <img src={`https://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg`} alt="" />}
+            <GameArtwork game={game} />
             <div>
               <strong>{game.name}</strong>
               <span>{Math.round(Number(game.playtime_forever || 0) / 60)}h jogadas</span>
@@ -351,5 +408,31 @@ function GameList({ title, games, emptyText }) {
         <p>{emptyText}</p>
       )}
     </section>
+  );
+}
+
+function GameArtwork({ game }) {
+  const iconUrl = !game.isMock && game.img_icon_url
+    ? `https://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg`
+    : '';
+  const sources = [
+    iconUrl,
+    `https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/capsule_184x69.jpg`,
+    `https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg`,
+  ].filter(Boolean);
+  const [sourceIndex, setSourceIndex] = useState(0);
+
+  if (!sources[sourceIndex]) {
+    return <span className="dg-gamer-game-fallback" aria-hidden="true">{game.name?.slice(0, 1).toUpperCase() || '?'}</span>;
+  }
+
+  return (
+    <img
+      src={sources[sourceIndex]}
+      alt=""
+      loading="lazy"
+      referrerPolicy="no-referrer"
+      onError={() => setSourceIndex((current) => current + 1)}
+    />
   );
 }
