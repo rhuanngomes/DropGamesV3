@@ -7,7 +7,12 @@
     "dev": "vite",
     "test": "node --test src/utils/*.test.js",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server/index.js",
+    "start:pm2": "pm2 start ecosystem.config.cjs --env production"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",
