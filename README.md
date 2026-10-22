@@ -1,5 +1,9 @@
 # DropGames
 
+## Publicação em produção
+
+O projeto possui um servidor Node próprio para servir o build React e manter autenticação, Steam, Epic Games e IA funcionando fora do Vite. Consulte [DEPLOY_VPS.md](./DEPLOY_VPS.md) para configurar variáveis, PM2, proxy reverso, HTTPS e DNS no VPS.
+
 DropGames é um projeto pensado para ajudar jogadores a encontrar melhores preços de jogos digitais em um só lugar. A ideia é simples: em vez de abrir várias lojas, comparar valores manualmente e torcer para não perder promoção, o usuário tem uma interface centralizada, visual e direta para descobrir jogos, ofertas e informações úteis.
 
 O projeto nasceu como parte do Happy Game e foi evoluindo por fases. Nesta versão, o front foi refatorado para uma base mais moderna com React, Vite e Tailwind CSS, mantendo o mesmo estilo visual que já existia no protótipo original.

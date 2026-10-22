@@ -1,4 +1,6 @@
 import { pbkdf2Sync, randomBytes, timingSafeEqual } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -8,6 +10,8 @@ const loginAttempts = new Map();
 const aiUsageLog = new Map();
 const aiAbuseLog = [];
 let epicFeaturedCache = null;
+let authPersistencePath = '';
+let runtimeEnv = {};
 const SESSION_TTL_MS = 30 * 60 * 1000;
 const LOCKOUT_MS = 10 * 60 * 1000;
 const MAX_LOGIN_ATTEMPTS = 5;
@@ -19,6 +23,8 @@ const ADMIN_EMAILS = new Set([
   'gabriela@dropgames.com.br',
   'leonardo@dropgames.com.br',
 ]);
+
+setInterval(cleanRuntimeState, 10 * 60 * 1000).unref();
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -69,7 +75,7 @@ export default defineConfig(({ mode }) => {
   };
 });
 
-function dropGamesEpicApiPlugin() {
+export function dropGamesEpicApiPlugin() {
   return {
     name: 'dropgames-epic-featured-api',
     configureServer(server) {
@@ -272,8 +278,9 @@ function slugify(value = '') {
   return String(value).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 }
 
-function dropGamesAuthApiPlugin(env) {
-  seedDemoAdministrators();
+export function dropGamesAuthApiPlugin(env) {
+  runtimeEnv = env;
+  if (env.NODE_ENV !== 'production' || env.SEED_DEMO_USERS === 'true') seedDemoAdministrators();
   return {
     name: 'dropgames-auth-api',
     configureServer(server) {
@@ -302,6 +309,7 @@ function dropGamesAuthApiPlugin(env) {
           if (req.method === 'POST' && route === '/logout') {
             const session = getRequestSession(req);
             if (session) authSessions.delete(session.id);
+            persistAuthState();
             clearSessionCookie(res, env);
             sendJson(res, 200, { ok: true });
             return;
@@ -382,6 +390,7 @@ function dropGamesAuthApiPlugin(env) {
 
             authUsers.delete(session.email);
             authSessions.delete(session.id);
+            persistAuthState();
             clearSessionCookie(res, env);
             sendJson(res, 200, { ok: true, message: 'Conta e dados de demonstracao apagados.' });
             return;
@@ -396,7 +405,7 @@ function dropGamesAuthApiPlugin(env) {
   };
 }
 
-function dropGamesAiApiPlugin(env) {
+export function dropGamesAiApiPlugin(env) {
   return {
     name: 'dropgames-ai-api',
     configureServer(server) {
@@ -490,10 +499,11 @@ function createEmailUser(body) {
     createdAt: new Date().toISOString(),
     privacyConsentAt: new Date().toISOString(),
     retentionPolicy: 'Sessao expira em 30 minutos. Dados pessoais devem ser minimizados e apagaveis pelo usuario.',
-    role: ADMIN_EMAILS.has(email) ? 'admin' : 'user',
+    role: runtimeEnv.NODE_ENV !== 'production' && ADMIN_EMAILS.has(email) ? 'admin' : 'user',
   };
 
   authUsers.set(email, user);
+  persistAuthState();
   return user;
 }
 
@@ -528,6 +538,7 @@ function createAuthSession(email) {
   };
 
   authSessions.set(session.id, session);
+  persistAuthState();
   return session;
 }
 
@@ -540,6 +551,7 @@ function getRequestSession(req) {
 
   if (session.expiresAt <= Date.now()) {
     authSessions.delete(session.id);
+    persistAuthState();
     return null;
   }
 
@@ -549,12 +561,12 @@ function getRequestSession(req) {
 }
 
 function setSessionCookie(res, sessionId, env) {
-  const secure = env.AUTH_COOKIE_SECURE === 'true' ? '; Secure' : '';
+  const secure = env.AUTH_COOKIE_SECURE === 'false' ? '' : (env.NODE_ENV === 'production' || env.AUTH_COOKIE_SECURE === 'true' ? '; Secure' : '');
   res.setHeader('Set-Cookie', `dg_session=${sessionId}; HttpOnly; SameSite=Lax; Path=/; Max-Age=1800${secure}`);
 }
 
 function clearSessionCookie(res, env) {
-  const secure = env.AUTH_COOKIE_SECURE === 'true' ? '; Secure' : '';
+  const secure = env.AUTH_COOKIE_SECURE === 'false' ? '' : (env.NODE_ENV === 'production' || env.AUTH_COOKIE_SECURE === 'true' ? '; Secure' : '');
   res.setHeader('Set-Cookie', `dg_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0${secure}`);
 }
 
@@ -575,7 +587,27 @@ function registerFailedAttempt(key) {
   const current = loginAttempts.get(key) || { count: 0, lockedUntil: 0 };
   const count = current.count + 1;
   const lockedUntil = count >= MAX_LOGIN_ATTEMPTS ? Date.now() + LOCKOUT_MS : 0;
-  loginAttempts.set(key, { count, lockedUntil });
+  loginAttempts.set(key, { count, lockedUntil, updatedAt: Date.now() });
+}
+
+function cleanRuntimeState() {
+  const now = Date.now();
+  let removedSession = false;
+  authSessions.forEach((session, key) => {
+    if (session.expiresAt <= now) {
+      authSessions.delete(key);
+      removedSession = true;
+    }
+  });
+  loginAttempts.forEach((attempt, key) => {
+    if (now - (attempt.updatedAt || 0) > LOCKOUT_MS) loginAttempts.delete(key);
+  });
+  aiUsageLog.forEach((timestamps, key) => {
+    const recent = timestamps.filter((timestamp) => now - timestamp < AI_RATE_LIMIT_WINDOW_MS);
+    if (recent.length) aiUsageLog.set(key, recent);
+    else aiUsageLog.delete(key);
+  });
+  if (removedSession) persistAuthState();
 }
 
 function getClientKey(req, email) {
@@ -620,6 +652,73 @@ function seedDemoAdministrators() {
       retentionPolicy: 'Sessao expira em 30 minutos. Dados pessoais devem ser minimizados e apagaveis pelo usuario.',
     });
   });
+  persistAuthState();
+}
+
+export function configureRuntimePersistence(env = process.env) {
+  runtimeEnv = env;
+  authPersistencePath = resolve(env.DATA_FILE || './data/dropgames-auth.json');
+  if (existsSync(authPersistencePath)) {
+    try {
+      const stored = JSON.parse(readFileSync(authPersistencePath, 'utf8'));
+      authUsers.clear();
+      authSessions.clear();
+      (stored.users || []).forEach((user) => authUsers.set(user.email, user));
+      (stored.sessions || [])
+        .filter((session) => session.expiresAt > Date.now())
+        .forEach((session) => authSessions.set(session.id, session));
+    } catch (error) {
+      console.error('Nao foi possivel carregar a persistencia de autenticacao:', error.message);
+    }
+  }
+  seedProductionAdministrator(env);
+}
+
+function seedProductionAdministrator(env) {
+  if (env.NODE_ENV !== 'production') return;
+  const email = normalizeEmail(env.ADMIN_EMAIL);
+  const password = String(env.ADMIN_PASSWORD || '');
+  if (!email || !password || authUsers.has(email)) return;
+  if (!isValidEmail(email) || !isStrongPassword(password) || isCompromisedPassword(password)) {
+    throw new Error('ADMIN_EMAIL ou ADMIN_PASSWORD nao atende a politica de seguranca. Corrija o .env antes de iniciar.');
+  }
+
+  const credentials = hashPassword(password);
+  const createdAt = new Date().toISOString();
+  authUsers.set(email, {
+    id: randomBytes(10).toString('hex'),
+    name: String(env.ADMIN_NAME || 'Administrador DropGames').trim(),
+    email,
+    ageGroup: 'adult',
+    youthMode: false,
+    passwordHash: credentials.hash,
+    passwordSalt: credentials.salt,
+    passwordIterations: credentials.iterations,
+    createdAt,
+    privacyConsentAt: createdAt,
+    role: 'admin',
+    retentionPolicy: 'Sessao expira em 30 minutos. Dados pessoais devem ser minimizados e apagaveis pelo usuario.',
+  });
+  persistAuthState();
+}
+
+function persistAuthState() {
+  if (!authPersistencePath) return;
+
+  try {
+    mkdirSync(dirname(authPersistencePath), { recursive: true, mode: 0o700 });
+    const temporaryPath = `${authPersistencePath}.tmp`;
+    const payload = JSON.stringify({
+      version: 1,
+      savedAt: new Date().toISOString(),
+      users: [...authUsers.values()],
+      sessions: [...authSessions.values()].filter((session) => session.expiresAt > Date.now()),
+    }, null, 2);
+    writeFileSync(temporaryPath, payload, { encoding: 'utf8', mode: 0o600 });
+    renameSync(temporaryPath, authPersistencePath);
+  } catch (error) {
+    console.error('Nao foi possivel salvar a persistencia de autenticacao:', error.message);
+  }
 }
 
 function publicSession(session) {
