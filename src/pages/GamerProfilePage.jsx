@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { PageShell } from '../components/layout/index.js';
+import SteamProfileVisibilityGuide from '../components/SteamProfileVisibilityGuide.jsx';
 import { useGames } from '../hooks/index.js';
 import {
   buildGamerProfile,
@@ -40,6 +41,7 @@ export default function GamerProfilePage() {
   const [library, setLibrary] = useState([]);
   const [recent, setRecent] = useState([]);
   const gamerProfile = useMemo(() => buildGamerProfile(library, recent), [library, recent]);
+  const steamLibraryUnavailable = Boolean(session?.steamId && status === 'success' && library.length === 0);
   const gamerAi = useMemo(() => generateGamerAiInsights(gamerProfile, mockProfile), [gamerProfile, mockProfile]);
   const recommendations = useMemo(
     () => recommendGamesForGamer(gamesApi.games, gamerProfile),
@@ -195,6 +197,7 @@ export default function GamerProfilePage() {
           <p className="dg-kicker">GamePulse AI</p>
           <h1>Crie seu DNA gamer</h1>
           <p>Conecte a Steam quando houver uma conta com biblioteca ou use um perfil demonstrativo para apresentar o motor de match agora.</p>
+          <SteamProfileVisibilityGuide />
           <button type="button" className="dg-steam-login-btn" onClick={handleSteamLogin}>Entrar com Steam</button>
           <DemoProfilePicker profiles={demoProfiles} onSelect={activateDemoProfile} />
           <a href="/" className="dg-gamer-skip">Fazer isso depois e voltar à DropGames</a>
@@ -215,6 +218,14 @@ export default function GamerProfilePage() {
       </section>
 
       {status === 'loading' && <div className="dg-gamer-notice">Carregando biblioteca, horas jogadas e jogos recentes...</div>}
+
+      {steamLibraryUnavailable && (
+        <section className="dg-gamer-notice dg-gamer-notice--privacy">
+          <strong>Não conseguimos acessar sua biblioteca da Steam</strong>
+          <p>O login funcionou, mas seu perfil ou os detalhes dos jogos parecem privados. Faça os ajustes abaixo e atualize esta página.</p>
+          <SteamProfileVisibilityGuide open />
+        </section>
+      )}
 
       {status === 'needs-key' && (
         <section className="dg-gamer-notice">

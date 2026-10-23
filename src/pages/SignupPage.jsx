@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import SteamProfileVisibilityGuide from '../components/SteamProfileVisibilityGuide.jsx';
 import { signupWithEmail, startSteamLogin } from '../services/index.js';
 import {
   getAgeProtectionPolicy,
@@ -63,12 +64,13 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="dg-login-page">
-      <div className="dg-login-left">
+    <div className="dg-login-page dg-signup-page">
+      <div className="dg-login-left dg-signup-left">
         <a href="/" className="dg-login-logo"><img src="/img/logo-dropgames.svg" alt="DropGames" /></a>
         <div className="dg-login-form-wrap">
           <form className="dg-login-form" noValidate onSubmit={handleSubmit}>
             <div className="dg-login-heading-block"><p className="dg-login-title">Crie seu DNA gamer</p><p className="dg-login-subtitle">Conecte uma conta gamer para personalizar ofertas, matches e insights.</p></div>
+            <SteamProfileVisibilityGuide compact />
             <button type="button" className="dg-steam-login-btn" onClick={startSteamLogin}>Cadastrar com Steam</button>
             <p className="dg-login-security-note">Login oficial via Steam. O DropGames nao acessa sua senha.</p>
             <div className="dg-login-divider"><span>ou cadastre com email</span></div>

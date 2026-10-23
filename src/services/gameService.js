@@ -4,6 +4,19 @@ const CHEAPSHARK_API_URL = '/cheapshark/api/1.0';
 const CHEAPSHARK_REDIRECT_URL = 'https://www.cheapshark.com/redirect';
 const STEAM_STORE_URL = '/steam';
 
+async function readJsonResponse(response, fallbackMessage) {
+  const contentType = response.headers.get('content-type') || '';
+  if (!contentType.toLowerCase().includes('application/json')) {
+    throw new Error(fallbackMessage);
+  }
+
+  try {
+    return await response.json();
+  } catch {
+    throw new Error(fallbackMessage);
+  }
+}
+
 export async function fetchGames() {
   try {
     const steamFeatured = await fetchSteamFeaturedCategories();
@@ -38,7 +51,11 @@ export async function fetchGames() {
   }
 }
 
-export async function fetchGameDetails({ gameID, title } = {}) {
+export async function fetchGameDetails({ gameID, steamAppID, title } = {}) {
+  if (steamAppID) {
+    return fetchSteamGameDetails({ steamAppID, title });
+  }
+
   const resolvedGameID = gameID || await findCheapSharkGameID(title);
 
   if (!resolvedGameID) {
@@ -51,12 +68,12 @@ export async function fetchGameDetails({ gameID, title } = {}) {
   ]);
 
   const game = normalizeCheapSharkGameLookup(resolvedGameID, cheapSharkGame, stores);
-  const steamAppID = game.steamAppID;
+  const resolvedSteamAppID = game.steamAppID;
 
-  const [steamDetails, steamReviews] = steamAppID
+  const [steamDetails, steamReviews] = resolvedSteamAppID
     ? await Promise.all([
-        fetchSteamDetails(steamAppID),
-        fetchSteamReviews(steamAppID),
+        fetchSteamDetails(resolvedSteamAppID),
+        fetchSteamReviews(resolvedSteamAppID),
       ])
     : [null, null];
 
@@ -65,6 +82,59 @@ export async function fetchGameDetails({ gameID, title } = {}) {
     updatedAt: new Date().toISOString(),
     currency: 'USD',
     game: mergeSteamData(game, steamDetails, steamReviews),
+  };
+}
+
+async function fetchSteamGameDetails({ steamAppID, title }) {
+  const [detailsResult, reviewsResult] = await Promise.allSettled([
+    fetchSteamDetails(steamAppID),
+    fetchSteamReviews(steamAppID),
+  ]);
+  const steamDetails = detailsResult.status === 'fulfilled' ? detailsResult.value : null;
+  const steamReviews = reviewsResult.status === 'fulfilled' ? reviewsResult.value : null;
+  const comingSoon = Boolean(steamDetails?.release_date?.coming_soon);
+  const priceOverview = steamDetails?.price_overview;
+  const hasPublishedPrice = Boolean(priceOverview) || steamDetails?.is_free === true;
+  const price = steamDetails?.is_free ? 0 : Number(priceOverview?.final || 0) / 100;
+  const regularPrice = steamDetails?.is_free ? 0 : Number(priceOverview?.initial || priceOverview?.final || 0) / 100;
+  const storeUrl = `https://store.steampowered.com/app/${encodeURIComponent(steamAppID)}`;
+  const baseGame = {
+    id: '',
+    steamAppID: String(steamAppID),
+    slug: `steam-${steamAppID}`,
+    title: steamDetails?.name || title || 'Jogo da Steam',
+    image: steamDetails?.header_image || `https://cdn.cloudflare.steamstatic.com/steam/apps/${steamAppID}/header.jpg`,
+    heroImage: steamDetails?.background_raw || steamDetails?.background || steamDetails?.header_image || `https://cdn.cloudflare.steamstatic.com/steam/apps/${steamAppID}/header.jpg`,
+    genre: comingSoon ? 'Em breve' : 'PC',
+    tags: ['Steam Store'],
+    score: 0,
+    releaseDate: steamDetails?.release_date?.date || '',
+    prices: [{
+      store: 'Steam',
+      storeID: '1',
+      platform: 'PC',
+      price,
+      regularPrice,
+      discount: Number(priceOverview?.discount_percent || 0),
+      dealID: String(steamAppID),
+      dealUrl: storeUrl,
+      unavailable: !hasPublishedPrice,
+    }],
+    reviews: [],
+    requirements: null,
+    description: steamDetails?.short_description || 'A Steam ainda não disponibilizou informações completas para este jogo.',
+    availability: {
+      status: comingSoon ? 'coming-soon' : (!steamDetails || !steamReviews?.query_summary?.total_reviews ? 'limited' : 'available'),
+      releaseDate: steamDetails?.release_date?.date || '',
+      hasPublishedPrice,
+    },
+  };
+
+  return {
+    source: 'Steam Store',
+    updatedAt: new Date().toISOString(),
+    currency: steamDetails?.price_overview?.currency || 'BRL',
+    game: mergeSteamData(baseGame, steamDetails, steamReviews),
   };
 }
 
@@ -120,7 +190,7 @@ async function fetchCheapSharkStores() {
     throw new Error('Nao foi possivel carregar as lojas da CheapShark.');
   }
 
-  const stores = await response.json();
+  const stores = await readJsonResponse(response, 'A CheapShark retornou uma resposta inválida ao carregar as lojas.');
 
   return stores.reduce((acc, store) => {
     acc[store.storeID] = {
@@ -151,7 +221,7 @@ async function fetchCheapSharkDealsBySort(sortBy, options = {}) {
     throw new Error(`Nao foi possivel carregar jogos por ${sortBy} na CheapShark.`);
   }
 
-  return response.json();
+  return readJsonResponse(response, 'A CheapShark retornou dados inválidos para esta lista.');
 }
 
 async function fetchSteamFeaturedCategories() {
@@ -165,7 +235,7 @@ async function fetchSteamFeaturedCategories() {
     throw new Error('Nao foi possivel carregar os mais vendidos da Steam.');
   }
 
-  return response.json();
+  return readJsonResponse(response, 'A Steam retornou dados inválidos para os destaques.');
 }
 
 async function fetchCheapSharkGame(gameID) {
@@ -175,7 +245,7 @@ async function fetchCheapSharkGame(gameID) {
     throw new Error('Nao foi possivel carregar os detalhes do jogo na CheapShark.');
   }
 
-  return response.json();
+  return readJsonResponse(response, 'Os detalhes deste jogo ainda não estão disponíveis.');
 }
 
 async function searchCheapSharkGames(title, limit = '24') {
@@ -190,7 +260,7 @@ async function searchCheapSharkGames(title, limit = '24') {
     throw new Error('Nao foi possivel buscar jogos na CheapShark.');
   }
 
-  return response.json();
+  return readJsonResponse(response, 'A busca deste jogo retornou dados inválidos.');
 }
 
 async function findCheapSharkGameID(title) {
@@ -208,7 +278,7 @@ async function findCheapSharkGameID(title) {
     throw new Error('Nao foi possivel buscar o jogo na CheapShark.');
   }
 
-  const games = await response.json();
+  const games = await readJsonResponse(response, 'Não foi possível interpretar os dados deste jogo.');
   return games?.[0]?.gameID || '';
 }
 
@@ -222,7 +292,7 @@ async function fetchSteamDetails(steamAppID) {
 
   if (!response.ok) return null;
 
-  const payload = await response.json();
+  const payload = await readJsonResponse(response, 'A Steam ainda não disponibilizou os detalhes deste jogo.');
   const appPayload = payload?.[steamAppID];
 
   return appPayload?.success ? appPayload.data : null;
@@ -241,7 +311,7 @@ async function fetchSteamReviews(steamAppID) {
 
   if (!response.ok) return null;
 
-  return response.json();
+  return readJsonResponse(response, 'As avaliações deste jogo ainda não estão disponíveis.');
 }
 
 async function fetchLocalGamesFallback() {

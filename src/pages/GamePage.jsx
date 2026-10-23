@@ -6,8 +6,9 @@ import { analyzeGamePurchase, analyzeOfferSecurity, answerGameQuestion, formatPr
 export default function GamePage() {
   const params = new URLSearchParams(window.location.search);
   const gameID = params.get('gameID');
+  const steamAppID = params.get('steamAppID');
   const title = params.get('title');
-  const { game, meta, status, error } = useGameDetails({ gameID, title });
+  const { game, meta, status, error } = useGameDetails({ gameID, steamAppID, title });
 
   return (
     <PageShell active="/">
@@ -44,6 +45,9 @@ function GameDetail({ game, meta }) {
     rating: analyzeOfferSecurity(offer, { bestOffer, game }),
   }));
   const bestSecurityRating = analyzeOfferSecurity(bestOffer, { bestOffer, game });
+  const isComingSoon = game.availability?.status === 'coming-soon';
+  const hasLimitedData = game.availability?.status === 'limited';
+  const priceUnavailable = Boolean(bestOffer?.unavailable);
 
   useEffect(() => {
     setActiveMedia(gallery[0]);
@@ -93,6 +97,17 @@ function GameDetail({ game, meta }) {
         </nav>
       </header>
 
+      {(isComingSoon || hasLimitedData) && (
+        <div className={`dg-game-availability-notice ${isComingSoon ? 'is-upcoming' : 'is-limited'}`} role="status">
+          <strong>{isComingSoon ? 'Este jogo ainda não foi lançado' : 'Este jogo ainda tem poucos dados disponíveis'}</strong>
+          <p>
+            {isComingSoon
+              ? `A Steam indica o lançamento${game.availability?.releaseDate ? ` para ${game.availability.releaseDate}` : ' para uma data futura'}. Preços, reviews e requisitos podem mudar até lá.`
+              : 'O título é recente ou a loja ainda não publicou reviews e informações completas. Mostramos abaixo apenas os dados confirmados.'}
+          </p>
+        </div>
+      )}
+
       <div className="dg-game-product-grid" id="overview">
         <div className="dg-game-main-column">
           <div className="dg-game-media-frame">
@@ -114,7 +129,7 @@ function GameDetail({ game, meta }) {
           </div>
 
           <div className="dg-game-snapshot">
-            <SnapshotItem label="Menor preco" value={formatPrice(bestOffer.price, meta.currency)} />
+            <SnapshotItem label="Menor preco" value={priceUnavailable ? 'Ainda não divulgado' : formatPrice(bestOffer.price, meta.currency)} />
             <SnapshotItem label="Lojas analisadas" value={totalStores} />
             <SnapshotItem label="Maior desconto" value={maxDiscount > 0 ? `${maxDiscount}%` : 'Sem desconto'} />
           </div>
@@ -132,10 +147,10 @@ function GameDetail({ game, meta }) {
           <h2>{game.title}</h2>
           <div className="dg-game-buy-summary">
             <span className="dg-badge">{game.genre}</span>
-            <strong>{formatPrice(bestOffer.price, meta.currency)}</strong>
-            <p>Melhor oferta em {bestOffer.store}</p>
+            <strong>{priceUnavailable ? 'Preço não divulgado' : formatPrice(bestOffer.price, meta.currency)}</strong>
+            <p>{priceUnavailable ? 'Consulte a página oficial para acompanhar o lançamento' : `Melhor oferta em ${bestOffer.store}`}</p>
           </div>
-          <a href={bestOffer.dealUrl} target="_blank" rel="noreferrer" className="dg-game-primary-action">Ver oferta</a>
+          <a href={bestOffer.dealUrl} target="_blank" rel="noreferrer" className="dg-game-primary-action">{priceUnavailable ? 'Acompanhar na Steam' : 'Ver oferta'}</a>
           <a href="#prices" className="dg-game-secondary-action">Comparar lojas</a>
           <a href="#security" className={`dg-game-security-pill dg-risk-${bestSecurityRating.level}`}>{bestSecurityRating.label}</a>
           <div className="dg-game-meta-list">
@@ -295,13 +310,13 @@ function GameDetail({ game, meta }) {
             <a href={offer.dealUrl} target="_blank" rel="noreferrer" className="dg-store-offer-card" key={`${offer.storeID}-${offer.dealID}`}>
               <StoreLogo offer={offer} />
               <div className="dg-store-offer-main">
-                <span>{index === 0 ? 'Melhor escolha' : 'Oferta disponivel'}</span>
+                <span>{offer.unavailable ? 'Página oficial' : (index === 0 ? 'Melhor escolha' : 'Oferta disponivel')}</span>
                 <strong>{offer.store}</strong>
-                <p>{getOfferAdvantage(offer, bestOffer)}</p>
+                <p>{offer.unavailable ? 'A loja ainda não divulgou preço ou disponibilidade de compra.' : getOfferAdvantage(offer, bestOffer)}</p>
               </div>
               <div className="dg-store-offer-price">
                 <SecurityOfferBadge rating={securityRatings.find((item) => item.offer === offer)?.rating} />
-                <span className="dg-store-price">{formatPrice(offer.price, meta.currency)}</span>
+                <span className="dg-store-price">{offer.unavailable ? 'A definir' : formatPrice(offer.price, meta.currency)}</span>
                 {offer.regularPrice > offer.price && <span className="dg-store-old-price">{formatPrice(offer.regularPrice, meta.currency)}</span>}
                 {offer.discount > 0 && <span className="dg-discount-badge">-{offer.discount}%</span>}
               </div>
