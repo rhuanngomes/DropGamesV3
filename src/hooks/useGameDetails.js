@@ -34,7 +34,7 @@ export function useGameDetails(params) {
     return () => {
       isMounted = false;
     };
-  }, [params?.gameID, params?.title]);
+  }, [params?.gameID, params?.steamAppID, params?.title]);
 
   return { game, meta, status, error };
 }

@@ -2,6 +2,37 @@
    SIGNUP — extends login.css
    ============================================================ */
 
+/* The signup form is taller than a viewport. Let the document scroll instead
+   of centering and clipping it inside the shared login shell. */
+.dg-signup-page {
+  height: auto;
+  min-height: 100dvh;
+  align-items: stretch;
+}
+
+.dg-signup-page .dg-signup-left {
+  min-height: 100dvh;
+  justify-content: flex-start;
+  overflow: visible;
+}
+
+.dg-signup-page .dg-login-form-wrap {
+  flex: 0 0 auto;
+  align-items: flex-start;
+  padding: 48px 0;
+}
+
+.dg-signup-page .dg-login-right {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100dvh;
+}
+
+.dg-signup-page .dg-login-copyright {
+  margin-top: auto;
+}
+
 /* ---- Field error messages ---- */
 .dg-field-error {
   display: none;
@@ -56,4 +87,14 @@
   color: #a3a3a3;
   line-height: normal;
   font-family: 'Inter', sans-serif;
+}
+
+@media (max-width: 1100px) {
+  .dg-signup-page .dg-signup-left {
+    min-height: 100dvh;
+  }
+
+  .dg-signup-page .dg-login-form-wrap {
+    padding: 36px 0;
+  }
 }

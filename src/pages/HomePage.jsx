@@ -12,45 +12,30 @@ import {
   getSteamSession,
   recommendGamesForGamer,
 } from '../services/index.js';
-import {
-  featuredGames,
-  newDiscoveries,
-  steamGames,
-  topPromos,
-} from '../data/home/index.js';
 
-function getGameDetailUrl(title, id) {
+function getGameDetailUrl(title, id, steamAppID) {
   if (id) return `/jogo?gameID=${encodeURIComponent(id)}`;
+  if (steamAppID) return `/jogo?steamAppID=${encodeURIComponent(steamAppID)}&title=${encodeURIComponent(title)}`;
   return `/jogo?title=${encodeURIComponent(title.replace(/\.\.\.$/, '').trim())}`;
 }
 
-function Hero({ epicGames }) {
+function Hero({ games, loading }) {
   const [active, setActive] = useState(0);
-  const fallbackGames = useMemo(() => featuredGames.map((game, index) => ({
-    id: `local-${index}`,
-    title: game.title,
-    description: game.desc,
-    image: `/img/${game.poster}`,
-    video: `/img/${game.video}`,
-    url: getGameDetailUrl(game.title),
-    cta: 'Compare agora',
-    logo: `/img/${game.logo}`,
-    logoAlt: game.logoAlt,
-    logoMaxWidth: game.logoMaxWidth,
-    logoMaxHeight: game.logoMaxHeight,
-    eyebrow: 'Destaque DropGames',
-  })), []);
-  const games = epicGames.length ? epicGames : fallbackGames;
-  const game = games[active] || games[0];
 
-  useEffect(() => setActive(0), [epicGames]);
+  useEffect(() => setActive(0), [games]);
 
   useEffect(() => {
+    if (!games.length) return undefined;
     const timer = window.setInterval(() => setActive((current) => (current + 1) % games.length), 10000);
     return () => window.clearInterval(timer);
   }, [games.length]);
 
-  const gameComparisonUrl = getGameDetailUrl(game.title);
+  if (loading) return <HeroSkeleton />;
+  if (!games.length) return null;
+
+  const game = games[active] || games[0];
+
+  const gameComparisonUrl = getGameDetailUrl(game.title, game.id, game.steamAppID);
 
   return (
     <section className="dg-hero">
@@ -74,7 +59,7 @@ function Hero({ epicGames }) {
                 <a href={gameComparisonUrl} className="dg-btn dg-btn-dark">Comparar preços</a>
                 {game.price && <span className="dg-hero-epic-price">{game.price}</span>}
                 <div className="dg-hero-platforms">
-                  {epicGames.length ? <span>EPIC GAMES</span> : <><img src="/img/platform-steam.png" alt="Steam" /><img src="/img/platform-ps.png" alt="PlayStation" /></>}
+                  <span>{game.sourceLabel || 'EPIC GAMES'}</span>
                 </div>
               </div>
             </div>
@@ -85,7 +70,7 @@ function Hero({ epicGames }) {
           {games.map((item, featuredIndex) => (
             <a
               key={item.id || item.title}
-              href={getGameDetailUrl(item.title)}
+              href={getGameDetailUrl(item.title, item.id, item.steamAppID)}
               className={`dg-hero-card ${active === featuredIndex ? 'dg-hero-card--active' : ''}`}
               onMouseEnter={() => setActive(featuredIndex)}
               onFocus={() => setActive(featuredIndex)}
@@ -100,6 +85,46 @@ function Hero({ epicGames }) {
             </a>
           ))}
         </aside>
+      </div>
+    </section>
+  );
+}
+
+function HeroSkeleton() {
+  return (
+    <section className="dg-hero dg-hero-loading" aria-label="Carregando destaques" aria-busy="true">
+      <div className="dg-hero-inner">
+        <div className="dg-hero-featured dg-skeleton dg-hero-skeleton-main" />
+        <aside className="dg-hero-sidebar" style={{ '--dg-hero-card-count': 4 }}>
+          {Array.from({ length: 4 }, (_, index) => (
+            <div className="dg-hero-card dg-hero-skeleton-card" key={index}>
+              <span className="dg-skeleton dg-hero-skeleton-thumb" />
+              <span className="dg-hero-skeleton-copy">
+                <span className="dg-skeleton" />
+                <span className="dg-skeleton" />
+              </span>
+            </div>
+          ))}
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function SectionSkeleton({ title }) {
+  return (
+    <section className="dg-section dg-home-section-loading" aria-label={`Carregando ${title}`} aria-busy="true">
+      <div className="dg-section-inner">
+        <div className="dg-skeleton dg-home-skeleton-title" />
+        <div className="dg-home-skeleton-grid">
+          {Array.from({ length: 5 }, (_, index) => (
+            <div className="dg-home-skeleton-game" key={index}>
+              <span className="dg-skeleton" />
+              <span className="dg-skeleton" />
+              <span className="dg-skeleton" />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -153,8 +178,8 @@ function ListSection({ columns }) {
                   <img src="/img/icon-section-arrow.svg" className="dg-title-arrow" alt="" />
                 </h2>
                 <div className="dg-list-items">
-                  {column.items.map(([image, title, price, badge, oldPrice, id]) => (
-                    <a href={getGameDetailUrl(title, id)} className="dg-list-item" key={`${column.title}-${title}`}>
+                  {column.items.map(([image, title, price, badge, oldPrice, id, steamAppID]) => (
+                    <a href={getGameDetailUrl(title, id, steamAppID)} className="dg-list-item" key={`${column.title}-${title}`}>
                       <img src={image?.startsWith('http') ? image : `/img/${image}`} alt={title} className="dg-list-thumb" />
                       <div className="dg-list-info">
                         <p className="dg-list-name">{title}</p>
@@ -195,7 +220,7 @@ function WeeklyGameBanner({ game }) {
               <p className="dg-banner-desc">{game.description}</p>
             </div>
             <div className="dg-banner-actions">
-              <a href={getGameDetailUrl(game.title, game.id)} className="dg-btn dg-btn-white">Ver jogo e comparar preços</a>
+              <a href={getGameDetailUrl(game.title, game.id, game.steamAppID)} className="dg-btn dg-btn-white">Ver jogo e comparar preços</a>
               {game.price && <strong>{game.price}</strong>}
             </div>
           </div>
@@ -209,11 +234,13 @@ export default function HomePage() {
   const gamesApi = useGames();
   const [steamGamerProfile, setSteamGamerProfile] = useState(null);
   const [epicHighlights, setEpicHighlights] = useState([]);
+  const [epicStatus, setEpicStatus] = useState('loading');
   const apiDeals = gamesApi.games.slice(0, 16).map((game) => {
     const offer = getBestOffer(game);
 
     return {
       id: game.id,
+      steamAppID: game.steamAppID,
       image: game.image,
       title: game.title,
       platform: offer.store,
@@ -226,6 +253,7 @@ export default function HomePage() {
       const offer = getBestOffer(game);
       return {
         id: game.id,
+        steamAppID: game.steamAppID,
         image: game.image,
         title: game.title,
         platform: `${game.recommendationScore}% de match · ${offer.store}`,
@@ -255,15 +283,25 @@ export default function HomePage() {
     () => buildLiveListColumns(gamesApi.games, gamesApi.currency),
     [gamesApi.currency, gamesApi.games],
   );
+  const heroGames = useMemo(
+    () => epicHighlights.length ? epicHighlights : buildCatalogHeroGames(gamesApi.games, gamesApi.currency),
+    [epicHighlights, gamesApi.currency, gamesApi.games],
+  );
 
   useEffect(() => {
     let active = true;
     fetchEpicFeaturedGames()
       .then((payload) => {
-        if (active) setEpicHighlights(payload.items);
+        if (active) {
+          setEpicHighlights(payload.items);
+          setEpicStatus('success');
+        }
       })
       .catch(() => {
-        if (active) setEpicHighlights([]);
+        if (active) {
+          setEpicHighlights([]);
+          setEpicStatus('error');
+        }
       });
 
     return () => {
@@ -294,21 +332,45 @@ export default function HomePage() {
 
   return (
     <PageShell active="/">
-      <Hero epicGames={epicHighlights} />
+      <Hero games={heroGames} loading={epicStatus === 'loading' || (epicStatus === 'error' && gamesApi.status === 'loading')} />
       {steamGamerProfile && personalizedGames.length > 0 && (
         <GameSection title="Recomendados para o seu perfil" games={personalizedGames} />
       )}
       <GameComparison {...gamesApi} />
-      <GameSection title="Melhores preços da semana" games={apiDeals} />
-      <PromoSection promos={topPromos} />
-      <GameSection title="Descubra algo novo" games={discoveryGames.length ? discoveryGames : newDiscoveries} />
+      {gamesApi.status === 'loading'
+        ? <SectionSkeleton title="melhores preços da semana" />
+        : <GameSection title="Melhores preços da semana" games={apiDeals} />}
+      {liveOfferPromos.length > 0 && <PromoSection promos={liveOfferPromos} />}
+      {gamesApi.status === 'loading' || epicStatus === 'loading'
+        ? <SectionSkeleton title="novos jogos" />
+        : <GameSection title="Descubra algo novo" games={discoveryGames} />}
       <ListSection columns={liveListColumns} />
       <GameSection title="Mais populares" games={apiDeals} />
       <WeeklyGameBanner game={weeklySpotlight} />
-      <GameSection title="Exclusividade da Steam" games={steamCarouselGames.length ? steamCarouselGames : steamGames} />
-      {liveOfferPromos.length > 0 && <PromoSection promos={liveOfferPromos} />}
+      {gamesApi.status === 'loading'
+        ? <SectionSkeleton title="jogos da Steam" />
+        : <GameSection title="Exclusividade da Steam" games={steamCarouselGames} />}
     </PageShell>
   );
+}
+
+function buildCatalogHeroGames(catalog, currency) {
+  return catalog
+    .filter((game) => game?.title && (game.heroImage || game.image))
+    .slice(0, 6)
+    .map((game) => {
+      const offer = getBestOffer(game);
+      return {
+        id: game.id,
+        title: game.title,
+        description: game.description || 'Compare preços e encontre a melhor oferta disponível agora.',
+        image: game.heroImage || game.image,
+        mobileImage: game.image,
+        price: formatPrice(offer.price, currency),
+        eyebrow: `Em destaque · ${offer.store}`,
+        sourceLabel: offer.store?.toUpperCase() || 'LOJAS PARCEIRAS',
+      };
+    });
 }
 
 function buildMixedDiscoveryGames(epicGames, steamCatalog, steamCurrency) {
@@ -322,6 +384,7 @@ function buildMixedDiscoveryGames(epicGames, steamCatalog, steamCurrency) {
     const offer = getBestOffer(game);
     return {
       id: game.id,
+      steamAppID: game.steamAppID,
       image: game.image,
       title: game.title,
       platform: 'Recomendado na Steam',
@@ -358,6 +421,7 @@ function buildSteamCarouselGames(catalog, currency) {
     seen.add(key);
     games.push({
       id: game.id,
+      steamAppID: game.steamAppID,
       image: game.image,
       title: game.title,
       platform: 'Steam',
@@ -381,6 +445,7 @@ function buildWeeklySpotlight(epicGames, steamCatalog, currency) {
     const offer = getBestOffer(game);
     return {
       id: game.id,
+      steamAppID: game.steamAppID,
       title: game.title,
       image: game.heroImage || game.image,
       description: game.description || 'Um dos jogos em alta entre os jogadores da Steam nesta semana.',
@@ -435,6 +500,7 @@ function buildLiveOfferPromos(catalog, currency) {
     const discountCopy = offer.discount > 0 ? ` com ${offer.discount}% de desconto` : '';
     return {
       id: game.id,
+      steamAppID: game.steamAppID,
       image: game.heroImage || game.image,
       title: game.title,
       desc: `${label}. Disponível na ${offer.store} por ${price}${discountCopy}. Compare antes de comprar.`,
@@ -446,13 +512,13 @@ function buildLiveOfferPromos(catalog, currency) {
 function buildLiveListColumns(catalog, currency) {
   if (!catalog.length) return [];
 
-  const dayNumber = Math.floor(Date.now() / (24 * 60 * 60 * 1000));
   const belongsTo = (game, category) => game.merchandisingCategories?.includes(category);
-  const dailyPick = (games, offset = 0) => {
-    if (!games.length) return [];
-    const start = (dayNumber + offset) % games.length;
-    return [...games.slice(start), ...games.slice(0, start)].slice(0, 5);
-  };
+  const relevantPick = (games) => [...games]
+    .sort((a, b) => (
+      (a.popularityRank || 999) - (b.popularityRank || 999)
+      || (b.steamRatingPercent || b.score || 0) - (a.steamRatingPercent || a.score || 0)
+    ))
+    .slice(0, 5);
   const topRated = [...catalog].sort((a, b) => (
     (b.steamRatingPercent || b.score || 0) - (a.steamRatingPercent || a.score || 0)
     || (a.popularityRank || 999) - (b.popularityRank || 999)
@@ -471,21 +537,22 @@ function buildLiveListColumns(catalog, currency) {
       hasDiscount ? `-${offer.discount}%` : '',
       hasDiscount ? formatPrice(offer.regularPrice, currency) : '',
       game.id,
+      game.steamAppID,
     ];
   };
 
   return [
     {
       title: 'Novos lançamentos',
-      items: dailyPick(newReleases.length ? newReleases : fallback, 0).map((game) => toItem(game)),
+      items: relevantPick(newReleases.length ? newReleases : fallback).map((game) => toItem(game)),
     },
     {
       title: 'Melhores classificados',
-      items: dailyPick(topRated, 3).map((game) => toItem(game)),
+      items: topRated.slice(0, 5).map((game) => toItem(game)),
     },
     {
       title: 'Em breve',
-      items: dailyPick(comingSoon.length ? comingSoon : fallback, 7).map((game) => toItem(game, true)),
+      items: relevantPick(comingSoon.length ? comingSoon : fallback).map((game) => toItem(game, true)),
     },
   ];
 }

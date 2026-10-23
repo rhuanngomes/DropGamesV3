@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import SteamProfileVisibilityGuide from '../components/SteamProfileVisibilityGuide.jsx';
 import { loginWithEmail, requestPasswordRecovery, startSteamLogin } from '../services/index.js';
 import { validateEmail } from '../utils/index.js';
 
@@ -57,12 +58,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="dg-login-page">
+    <div className="dg-login-page dg-steam-auth-page">
       <div className="dg-login-left">
         <a href="/" className="dg-login-logo"><img src="/img/logo-dropgames.svg" alt="DropGames" /></a>
         <div className="dg-login-form-wrap">
           <form className="dg-login-form" noValidate onSubmit={handleSubmit}>
             <div className="dg-login-heading-block"><p className="dg-login-title">Entre com seu perfil gamer</p><p className="dg-login-subtitle">Use uma conta de loja para gerar recomendacoes com base no seu historico real.</p></div>
+            <SteamProfileVisibilityGuide compact />
             <button type="button" className="dg-steam-login-btn" onClick={startSteamLogin}>Entrar com Steam</button>
             <p className="dg-login-security-note">Login oficial via Steam. O DropGames nao acessa sua senha.</p>
             <div className="dg-login-divider"><span>ou use email como fallback</span></div>

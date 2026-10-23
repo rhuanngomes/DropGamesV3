@@ -15,11 +15,11 @@ export function SectionHeader({ title, canScrollBack = false, canScrollForward =
   );
 }
 
-export function GameCard({ id, image, title, platform, price, priceClass = '' }) {
+export function GameCard({ id, steamAppID, image, title, platform, price, priceClass = '' }) {
   const imageSrc = image?.startsWith('http') ? image : `/img/${image}`;
 
   return (
-    <a className="dg-game-card" href={getGameDetailUrl(title, id)}>
+    <a className="dg-game-card" href={getGameDetailUrl(title, id, steamAppID)}>
       <div className="dg-game-card-img-wrap">
         <img src={imageSrc} alt={title} className="dg-game-card-img" />
       </div>
@@ -101,11 +101,11 @@ export function GameSection({ title, games }) {
   );
 }
 
-export function PromoCard({ id, image, title, desc, button }) {
+export function PromoCard({ id, steamAppID, image, title, desc, button }) {
   const imageSrc = image?.startsWith('http') ? image : `/img/${image}`;
 
   return (
-    <a href={getGameDetailUrl(title, id)} className="dg-promo-card">
+    <a href={getGameDetailUrl(title, id, steamAppID)} className="dg-promo-card">
       <img src={imageSrc} alt={title} className="dg-promo-img" />
       <div className="dg-promo-body">
         <p className="dg-promo-title">{title}</p>
@@ -142,7 +142,8 @@ export function FeatureCard({ title, desc }) {
   );
 }
 
-function getGameDetailUrl(title, id) {
+function getGameDetailUrl(title, id, steamAppID) {
   if (id) return `/jogo?gameID=${encodeURIComponent(id)}`;
+  if (steamAppID) return `/jogo?steamAppID=${encodeURIComponent(steamAppID)}&title=${encodeURIComponent(title)}`;
   return `/jogo?title=${encodeURIComponent(title.replace(/\.\.\.$/, '').trim())}`;
 }

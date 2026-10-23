@@ -158,7 +158,9 @@ function ComparisonCard({ game, currency }) {
   const bestOffer = getBestOffer(game);
   const sortedPrices = [...game.prices].sort((a, b) => a.price - b.price);
   const imageSrc = game.image?.startsWith('http') ? game.image : `/img/${game.image}`;
-  const detailUrl = game.id ? `/jogo?gameID=${encodeURIComponent(game.id)}` : getGameDetailUrl(game.title);
+  const detailUrl = game.id
+    ? `/jogo?gameID=${encodeURIComponent(game.id)}`
+    : getGameDetailUrl(game.title, game.steamAppID);
 
   return (
     <article className="dg-comparison-card">
@@ -202,6 +204,7 @@ function ComparisonCard({ game, currency }) {
   );
 }
 
-function getGameDetailUrl(title) {
+function getGameDetailUrl(title, steamAppID) {
+  if (steamAppID) return `/jogo?steamAppID=${encodeURIComponent(steamAppID)}&title=${encodeURIComponent(title)}`;
   return `/jogo?title=${encodeURIComponent(title.replace(/\.\.\.$/, '').trim())}`;
 }
