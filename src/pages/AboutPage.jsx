@@ -2,11 +2,11 @@ import { FeatureCard } from '../components/games/index.js';
 import { PageShell } from '../components/layout/index.js';
 
 const team = [
-  ['team-member-1.jpg', 'Gabriela de Souza Neves', 'Design e apresentação', 'Responsável pela identidade visual, wireframes e pela forma como o DropGames se comunica visualmente.'],
-  ['team-member-2.jpg', 'Valentino Matos Carvalho', 'Front-end e responsividade', 'Transformou layouts em código. Garante que o DropGames funcione bem em qualquer tela, do celular ao desktop.'],
-  ['team-member-3.jpg', 'Enzo Almeida Veríssimo', 'Interface e experiência do usuário', 'Cuida da home e da primeira impressão. Se o site parece intuitivo, é porque o Enzo fez funcionar assim.'],
-  ['team-member-4.jpg', 'Rhuann Gomes dos Santos', 'Back-end e arquitetura', 'Responsável pela lógica de validação, segurança de dados e estrutura que sustenta o DropGames por dentro.'],
-  ['team-member-5.jpg', 'Leonardo Dias de Oliveira', 'Pesquisa e conteúdo', 'Mergulhou nos dados do mercado de games para entender o jogador brasileiro antes de escrever uma linha de código.'],
+  ['team-gabriela.webp', 'Gabriela de Souza Neves', 'Design e apresentação', 'Responsável pela identidade visual, wireframes e pela forma como o DropGames se comunica visualmente.'],
+  ['team-valentino.webp', 'Valentino Matos Carvalho', 'Front-end e responsividade', 'Transformou layouts em código. Garante que o DropGames funcione bem em qualquer tela, do celular ao desktop.'],
+  ['team-enzo.webp', 'Enzo Almeida Veríssimo', 'Interface e experiência do usuário', 'Cuida da home e da primeira impressão. Se o site parece intuitivo, é porque o Enzo fez funcionar assim.'],
+  ['team-rhuann.webp', 'Rhuann Gomes dos Santos', 'Back-end e arquitetura', 'Responsável pela lógica de validação, segurança de dados e estrutura que sustenta o DropGames por dentro.'],
+  ['team-leonardo.webp', 'Leonardo Dias de Oliveira', 'Pesquisa e conteúdo', 'Mergulhou nos dados do mercado de games para entender o jogador brasileiro antes de escrever uma linha de código.'],
 ];
 
 const features = [

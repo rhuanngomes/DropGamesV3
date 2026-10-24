@@ -148,6 +148,7 @@ function normalizeEpicEditorial(payload) {
   const carousel = findEpicCarousel(payload);
   return (carousel?.slides || []).map((slide, index) => ({
     id: `epic-editorial-${index}-${slugify(slide.title)}`,
+    detailLookup: 'title',
     title: String(slide.title || 'Destaque Epic Games'),
     eyebrow: String(slide.eyebrow || 'Em destaque na Epic'),
     description: String(slide.description || ''),
@@ -180,6 +181,7 @@ function normalizeEpicPromotions(payload) {
 
     return {
       id: offer.id || `${offer.namespace}-${slug}`,
+      detailLookup: 'title',
       title: String(offer.title || ''),
       eyebrow: hasActiveEpicPromotion(offer) ? 'Oferta em destaque' : 'Destaque Epic Games',
       description: String(offer.description || 'Disponivel agora na Epic Games Store.'),

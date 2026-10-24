@@ -13,8 +13,8 @@ import {
   recommendGamesForGamer,
 } from '../services/index.js';
 
-function getGameDetailUrl(title, id, steamAppID) {
-  if (id) return `/jogo?gameID=${encodeURIComponent(id)}`;
+function getGameDetailUrl(title, id, steamAppID, detailLookup) {
+  if (id && detailLookup !== 'title') return `/jogo?gameID=${encodeURIComponent(id)}`;
   if (steamAppID) return `/jogo?steamAppID=${encodeURIComponent(steamAppID)}&title=${encodeURIComponent(title)}`;
   return `/jogo?title=${encodeURIComponent(title.replace(/\.\.\.$/, '').trim())}`;
 }
@@ -35,7 +35,7 @@ function Hero({ games, loading }) {
 
   const game = games[active] || games[0];
 
-  const gameComparisonUrl = getGameDetailUrl(game.title, game.id, game.steamAppID);
+  const gameComparisonUrl = getGameDetailUrl(game.title, game.id, game.steamAppID, game.detailLookup);
 
   return (
     <section className="dg-hero">
@@ -56,7 +56,7 @@ function Hero({ games, loading }) {
               <span className="dg-hero-source">{game.eyebrow || 'Destaque Epic Games'}</span>
               <p className="dg-hero-desc">{game.description}</p>
               <div className="dg-hero-cta">
-                <a href={gameComparisonUrl} className="dg-btn dg-btn-dark">Comparar preços</a>
+                <a href={gameComparisonUrl} className="dg-btn dg-btn-dark">Ver detalhes</a>
                 {game.price && <span className="dg-hero-epic-price">{game.price}</span>}
                 <div className="dg-hero-platforms">
                   <span>{game.sourceLabel || 'EPIC GAMES'}</span>
@@ -70,7 +70,7 @@ function Hero({ games, loading }) {
           {games.map((item, featuredIndex) => (
             <a
               key={item.id || item.title}
-              href={getGameDetailUrl(item.title, item.id, item.steamAppID)}
+              href={getGameDetailUrl(item.title, item.id, item.steamAppID, item.detailLookup)}
               className={`dg-hero-card ${active === featuredIndex ? 'dg-hero-card--active' : ''}`}
               onMouseEnter={() => setActive(featuredIndex)}
               onFocus={() => setActive(featuredIndex)}
