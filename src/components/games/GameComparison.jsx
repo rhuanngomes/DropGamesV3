@@ -17,6 +17,7 @@ export default function GameComparison({ games, status, error, updatedAt, source
   const [catalogError, setCatalogError] = useState('');
   const [catalogQuery, setCatalogQuery] = useState('');
   const [catalogCurrency, setCatalogCurrency] = useState('USD');
+  const [catalogSource, setCatalogSource] = useState('');
 
   const normalizedSearch = search.trim().toLowerCase();
   const isCatalogSearch = normalizedSearch.length >= 2;
@@ -29,6 +30,7 @@ export default function GameComparison({ games, status, error, updatedAt, source
       setCatalogStatus('idle');
       setCatalogError('');
       setCatalogQuery('');
+      setCatalogSource('');
       return undefined;
     }
 
@@ -42,6 +44,7 @@ export default function GameComparison({ games, status, error, updatedAt, source
           setCatalogGames(payload.games);
           setCatalogQuery(payload.resolvedQuery || search.trim());
           setCatalogCurrency(payload.currency || 'USD');
+          setCatalogSource(payload.source || 'Catálogo de jogos');
           setCatalogStatus('success');
         }
       } catch (requestError) {
@@ -102,7 +105,7 @@ export default function GameComparison({ games, status, error, updatedAt, source
             {visibleStatus === 'loading' && (isCatalogSearch ? 'Buscando no catalogo...' : 'Carregando ofertas...')}
             {visibleStatus === 'error' && visibleError}
             {visibleStatus === 'success' && statusText}
-            <span>{isCatalogSearch ? 'CheapShark catalog search' : source}</span>
+            <span>{isCatalogSearch ? catalogSource : source}</span>
             {isCatalogSearch && catalogQuery && catalogQuery.toLowerCase() !== search.trim().toLowerCase() && <span>Busca interpretada como “{catalogQuery}”</span>}
             {updatedAt && <span>Atualizado em {new Date(updatedAt).toLocaleString('pt-BR')}</span>}
           </div>
@@ -146,7 +149,7 @@ export default function GameComparison({ games, status, error, updatedAt, source
 
         {visibleStatus === 'success' && filteredGames.length === 0 && (
           <div className="dg-empty-state">
-            Nenhum jogo com ofertas foi encontrado na CheapShark para esta busca. Alguns titulos de consoles fechados podem nao aparecer em lojas de PC.
+            Nenhum jogo com oferta foi encontrado nos catálogos disponíveis. Alguns títulos de consoles fechados podem não aparecer em lojas de PC.
           </div>
         )}
       </div>

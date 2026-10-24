@@ -161,18 +161,32 @@ export async function searchGamesByTitle(title) {
   const cached = catalogSearchCache.get(cacheKey);
   if (cached?.expiresAt > Date.now()) return cached.payload;
 
-  const [stores, deals] = await Promise.all([
-    fetchCheapSharkStores(),
-    fetchCheapSharkDealsByTitle(cleanedTitle),
-  ]);
-  const games = normalizeCheapSharkDeals(deals, stores, { limit: 24, preserveApiOrder: true });
-  const payload = {
-    source: 'CheapShark catalog search',
-    updatedAt: new Date().toISOString(),
-    currency: 'USD',
-    resolvedQuery: cleanedTitle,
-    games,
-  };
+  let payload;
+  try {
+    const [stores, deals] = await Promise.all([
+      fetchCheapSharkStores(),
+      fetchCheapSharkDealsByTitle(cleanedTitle),
+    ]);
+    const games = normalizeCheapSharkDeals(deals, stores, { limit: 24, preserveApiOrder: true });
+    if (!games.length) throw new Error('A CheapShark não retornou ofertas para esta busca.');
+    payload = {
+      source: 'CheapShark catalog search',
+      updatedAt: new Date().toISOString(),
+      currency: 'USD',
+      resolvedQuery: cleanedTitle,
+      games,
+    };
+  } catch (cheapSharkError) {
+    const games = await searchSteamStore(cleanedTitle);
+    if (!games.length) throw cheapSharkError;
+    payload = {
+      source: 'Steam Store search',
+      updatedAt: new Date().toISOString(),
+      currency: 'BRL',
+      resolvedQuery: cleanedTitle,
+      games,
+    };
+  }
   catalogSearchCache.set(cacheKey, { payload, expiresAt: Date.now() + CATALOG_SEARCH_CACHE_MS });
   return payload;
 }
@@ -217,6 +231,43 @@ async function fetchCheapSharkDealsByTitle(title) {
     throw new Error('Nao foi possivel buscar jogos na CheapShark.');
   }
   return readJsonResponse(response, 'A busca deste jogo retornou dados inválidos.');
+}
+
+async function searchSteamStore(title) {
+  const params = new URLSearchParams({ term: title, l: 'brazilian', cc: 'BR' });
+  const response = await fetch(`${STEAM_STORE_URL}/api/storesearch/?${params.toString()}`);
+  if (!response.ok) return [];
+  const payload = await readJsonResponse(response, 'A Steam retornou dados inválidos para esta busca.');
+  return (payload.items || []).filter((item) => item?.type === 'app' && item?.id && item?.name).map((item, index) => {
+    const finalPrice = Number(item.price?.final || 0) / 100;
+    const regularPrice = Number(item.price?.initial || item.price?.final || 0) / 100;
+    return {
+      id: '',
+      steamAppID: String(item.id),
+      slug: `steam-${item.id}`,
+      title: item.name,
+      image: item.tiny_image || `https://cdn.cloudflare.steamstatic.com/steam/apps/${item.id}/header.jpg`,
+      heroImage: item.tiny_image || `https://cdn.cloudflare.steamstatic.com/steam/apps/${item.id}/header.jpg`,
+      genre: 'PC',
+      tags: ['Steam Store'],
+      score: Number(item.metascore || 0),
+      popularityRank: index + 1,
+      prices: [{
+        store: 'Steam',
+        storeID: '1',
+        platform: 'PC',
+        price: finalPrice,
+        regularPrice,
+        discount: regularPrice > 0 ? Math.round(((regularPrice - finalPrice) / regularPrice) * 100) : 0,
+        dealID: String(item.id),
+        dealUrl: `https://store.steampowered.com/app/${item.id}`,
+        unavailable: !item.price,
+      }],
+      reviews: [],
+      requirements: null,
+      description: 'Resultado encontrado diretamente no catálogo da Steam Store.',
+    };
+  });
 }
 
 async function fetchCheapSharkDealsBySort(sortBy, options = {}) {
