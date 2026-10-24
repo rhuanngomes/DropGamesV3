@@ -3,6 +3,9 @@ import { expandGameSearchQuery } from '../utils/gameSearch.js';
 const CHEAPSHARK_API_URL = '/cheapshark/api/1.0';
 const CHEAPSHARK_REDIRECT_URL = 'https://www.cheapshark.com/redirect';
 const STEAM_STORE_URL = '/steam';
+const CATALOG_SEARCH_CACHE_MS = 5 * 60 * 1000;
+const catalogSearchCache = new Map();
+let cheapSharkStoresCache = null;
 
 async function readJsonResponse(response, fallbackMessage) {
   const contentType = response.headers.get('content-type') || '';
@@ -154,41 +157,29 @@ export async function searchGamesByTitle(title) {
     };
   }
 
-  const [stores, searchResults] = await Promise.all([
+  const cacheKey = cleanedTitle.toLowerCase();
+  const cached = catalogSearchCache.get(cacheKey);
+  if (cached?.expiresAt > Date.now()) return cached.payload;
+
+  const [stores, deals] = await Promise.all([
     fetchCheapSharkStores(),
-    searchCheapSharkGames(cleanedTitle),
+    fetchCheapSharkDealsByTitle(cleanedTitle),
   ]);
-
-  const detailResults = await Promise.allSettled(
-    searchResults.slice(0, 12).map((game) => fetchCheapSharkGame(game.gameID)),
-  );
-
-  const games = detailResults
-    .map((result, index) => {
-      if (result.status !== 'fulfilled') return null;
-      const searchResult = searchResults[index];
-      const normalized = normalizeCheapSharkGameLookup(searchResult.gameID, result.value, stores);
-
-      return {
-        ...normalized,
-        title: normalized.title || searchResult.external,
-        image: normalized.image || searchResult.thumb,
-        heroImage: normalized.heroImage || searchResult.thumb,
-      };
-    })
-    .filter((game) => game?.prices?.length > 0)
-    .sort((a, b) => getBestOffer(a).price - getBestOffer(b).price);
-
-  return {
+  const games = normalizeCheapSharkDeals(deals, stores, { limit: 24, preserveApiOrder: true });
+  const payload = {
     source: 'CheapShark catalog search',
     updatedAt: new Date().toISOString(),
     currency: 'USD',
     resolvedQuery: cleanedTitle,
     games,
   };
+  catalogSearchCache.set(cacheKey, { payload, expiresAt: Date.now() + CATALOG_SEARCH_CACHE_MS });
+  return payload;
 }
 
 async function fetchCheapSharkStores() {
+  if (cheapSharkStoresCache?.expiresAt > Date.now()) return cheapSharkStoresCache.stores;
+
   const response = await fetch(`${CHEAPSHARK_API_URL}/stores`);
 
   if (!response.ok) {
@@ -197,7 +188,7 @@ async function fetchCheapSharkStores() {
 
   const stores = await readJsonResponse(response, 'A CheapShark retornou uma resposta inválida ao carregar as lojas.');
 
-  return stores.reduce((acc, store) => {
+  const normalizedStores = stores.reduce((acc, store) => {
     acc[store.storeID] = {
       id: store.storeID,
       name: store.storeName,
@@ -208,6 +199,24 @@ async function fetchCheapSharkStores() {
 
     return acc;
   }, {});
+  cheapSharkStoresCache = { stores: normalizedStores, expiresAt: Date.now() + CATALOG_SEARCH_CACHE_MS };
+  return normalizedStores;
+}
+
+async function fetchCheapSharkDealsByTitle(title) {
+  const params = new URLSearchParams({
+    title,
+    pageNumber: '0',
+    pageSize: '60',
+    sortBy: 'Deal Rating',
+    desc: '1',
+  });
+  const response = await fetch(`${CHEAPSHARK_API_URL}/deals?${params.toString()}`);
+  if (!response.ok) {
+    if (response.status === 429) throw new Error('A busca atingiu o limite temporário da CheapShark. Aguarde alguns minutos e tente novamente.');
+    throw new Error('Nao foi possivel buscar jogos na CheapShark.');
+  }
+  return readJsonResponse(response, 'A busca deste jogo retornou dados inválidos.');
 }
 
 async function fetchCheapSharkDealsBySort(sortBy, options = {}) {
@@ -251,21 +260,6 @@ async function fetchCheapSharkGame(gameID) {
   }
 
   return readJsonResponse(response, 'Os detalhes deste jogo ainda não estão disponíveis.');
-}
-
-async function searchCheapSharkGames(title, limit = '24') {
-  const params = new URLSearchParams({
-    title,
-    limit,
-  });
-
-  const response = await fetch(`${CHEAPSHARK_API_URL}/games?${params.toString()}`);
-
-  if (!response.ok) {
-    throw new Error('Nao foi possivel buscar jogos na CheapShark.');
-  }
-
-  return readJsonResponse(response, 'A busca deste jogo retornou dados inválidos.');
 }
 
 async function findCheapSharkGameID(title) {
