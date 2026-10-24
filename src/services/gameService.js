@@ -56,6 +56,12 @@ export async function fetchGames() {
 
 export async function fetchGameDetails({ gameID, steamAppID, title } = {}) {
   if (steamAppID) {
+    try {
+      const cheapSharkGameID = await findCheapSharkGameIDBySteamAppID(steamAppID);
+      if (cheapSharkGameID) return fetchAggregatedGameDetails(cheapSharkGameID);
+    } catch {
+      // Keep the internal game page available when CheapShark is rate-limited.
+    }
     return fetchSteamGameDetails({ steamAppID, title });
   }
 
@@ -65,6 +71,10 @@ export async function fetchGameDetails({ gameID, steamAppID, title } = {}) {
     throw new Error('Jogo nao encontrado.');
   }
 
+  return fetchAggregatedGameDetails(resolvedGameID);
+}
+
+async function fetchAggregatedGameDetails(resolvedGameID) {
   const [stores, cheapSharkGame] = await Promise.all([
     fetchCheapSharkStores(),
     fetchCheapSharkGame(resolvedGameID),
@@ -329,6 +339,14 @@ async function findCheapSharkGameID(title) {
   }
 
   const games = await readJsonResponse(response, 'Não foi possível interpretar os dados deste jogo.');
+  return games?.[0]?.gameID || '';
+}
+
+async function findCheapSharkGameIDBySteamAppID(steamAppID) {
+  const params = new URLSearchParams({ steamAppID: String(steamAppID) });
+  const response = await fetch(`${CHEAPSHARK_API_URL}/games?${params.toString()}`);
+  if (!response.ok) throw new Error('Nao foi possivel localizar este jogo no comparador.');
+  const games = await readJsonResponse(response, 'O comparador retornou dados inválidos para este jogo.');
   return games?.[0]?.gameID || '';
 }
 
