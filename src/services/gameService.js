@@ -70,12 +70,17 @@ export async function fetchGameDetails({ gameID, steamAppID, title } = {}) {
   const game = normalizeCheapSharkGameLookup(resolvedGameID, cheapSharkGame, stores);
   const resolvedSteamAppID = game.steamAppID;
 
-  const [steamDetails, steamReviews] = resolvedSteamAppID
-    ? await Promise.all([
-        fetchSteamDetails(resolvedSteamAppID),
-        fetchSteamReviews(resolvedSteamAppID),
-      ])
-    : [null, null];
+  let steamDetails = null;
+  let steamReviews = null;
+
+  if (resolvedSteamAppID) {
+    const [detailsResult, reviewsResult] = await Promise.allSettled([
+      fetchSteamDetails(resolvedSteamAppID),
+      fetchSteamReviews(resolvedSteamAppID),
+    ]);
+    steamDetails = detailsResult.status === 'fulfilled' ? detailsResult.value : null;
+    steamReviews = reviewsResult.status === 'fulfilled' ? reviewsResult.value : null;
+  }
 
   return {
     source: 'CheapShark API + Steam',
